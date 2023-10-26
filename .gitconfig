@@ -1,0 +1,3 @@
+[alias]
+    submodule-name = "!git submodule init src/submodule-name && git submodule update --remote src/submodule-name"
+    fix-submodule-name = "!git submodule add -f https://github.com/IliyanKostov9/private-repo-template.git src/submodule-name"
