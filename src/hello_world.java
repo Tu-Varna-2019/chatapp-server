@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 
 public class Filelnput {
     public static void main(String[] arg) {
-        File file = new File("input.txt");
+        File file = new File("input1.txt");
         FileInputStream fis = null;
         BufferedInputStream bis = null;
         DataInputStream dis = null;
