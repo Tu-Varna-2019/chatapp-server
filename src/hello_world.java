@@ -10,6 +10,7 @@ public class Filelnput {
         FileInputStream fis = null;
         BufferedInputStream bis = null;
         DataInputStream dis = null;
+        String openapi_key = "dsp_acd2e0a3504f422fd09a8f8dfe9d7a0a5bba";
 
         try {
             fis = new FileInputStream(file);
