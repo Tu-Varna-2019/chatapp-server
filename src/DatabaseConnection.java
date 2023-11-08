@@ -4,16 +4,25 @@ import java.sql.SQLException;
 
 public class DatabaseConnection {
     public static Connection connectToRDS() {
-        String url = "jdbc:tuvarnachatdb.culjntjsalhu.eu-west-1.rds.amazonaws.com";
-        String username = "postgres";
-        String password = "m9fwEDWuZ6EFSCXi7Up2EzNLWPYxa83E9RSra5RPiUjH7K6xC";
+        String url = System.getenv("POSTGRE_URL");
+        String username = System.getenv("POSTGRE_USERNAME");
+        String password = System.getenv("POSTGRE_PASSWORD");
 
         try {
             Connection connection = DriverManager.getConnection(url, username, password);
             return connection;
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
             return null;
         }
+
     }
+
+    public void test(){
+
+        String query = "SELECT datname FROM pg_database;";
+
+        System.out.println(query);
+    }
+
 }
