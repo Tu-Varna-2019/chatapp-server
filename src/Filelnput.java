@@ -1,12 +1,8 @@
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 public class Filelnput {
     public static void main(String[] arg) {
-        File file = new File("input1.txt");
+        File file = new File("input2.txt");
         FileInputStream fis = null;
         BufferedInputStream bis = null;
         DataInputStream dis = null;
@@ -22,7 +18,7 @@ public class Filelnput {
             fis.close();
             bis.close();
             dis.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
 
         }
