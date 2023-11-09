@@ -6,5 +6,6 @@ public class Main {
 
         String[] queryResult = chatDBManager.executeQuery(sqlGetDatabases, "datname");
 
+        //тест hava network project
     }
 }
