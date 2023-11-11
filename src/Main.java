@@ -1,3 +1,5 @@
+import java.beans.Statement;
+
 public class Main {
     public static void main(String[] arg) {
         String sqlGetDatabases = "SELECT datname FROM pg_database;";
@@ -6,6 +8,5 @@ public class Main {
 
         String[] queryResult = chatDBManager.executeQuery(sqlGetDatabases, "datname");
 
-        //тест hava network project
     }
 }
