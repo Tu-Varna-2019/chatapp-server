@@ -22,7 +22,7 @@ public class ChatDBManager {
     private void executeStatement(String tableQuery){
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
-            System.out.println("Table created successfully.");
+            System.out.println("Table created successfully!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
