@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import sql_statements.CreateTable;
 
 public class ChatDBManager {
     private final String URL = System.getenv("POSTGRE_URL");
@@ -17,9 +18,27 @@ public class ChatDBManager {
 
     // Define the constructor as private to prevent direct instantiation of the
     // class (aka singleton)
+
+    private void executeStatement(String tableQuery){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
+            preparedStatement.executeUpdate();
+            System.out.println("Table created successfully!");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     private ChatDBManager() {
         try {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+
+            executeStatement(CreateTable.getCreateUserTableQuery());
+
+            executeStatement(CreateTable.getCreateFriendRequestTableQuery());
+
+            executeStatement(CreateTable.getCreateGroupChatTableQuery());
+
+            executeStatement(CreateTable.getCreateMessageTableQuery());
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -36,11 +55,12 @@ public class ChatDBManager {
         return this.connection;
     }
 
+
     public String[] executeQuery(String query, String columns) {
         List<String> queryResultList = new ArrayList<String>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
-                ResultSet rs = pst.executeQuery()) {
+             ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
                 // TODO: check for cases to getInt, getDouble, etc.
