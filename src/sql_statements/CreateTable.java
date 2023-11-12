@@ -2,10 +2,10 @@ package sql_statements;
 
 public class CreateTable {
 
-    private static String createUserTableQuery;
-    private static String createFriendRequestTableQuery;
-    private static String createGroupChatTableQuery;
-    private static String createMessageTableQuery;
+    private static final String createUserTableQuery;
+    private static final String createFriendRequestTableQuery;
+    private static final String createGroupChatTableQuery;
+    private static final String createMessageTableQuery;
 
     static {
 
@@ -29,7 +29,7 @@ public class CreateTable {
                 + "ID SERIAL PRIMARY KEY,"
                 + "Name VARCHAR(255),"
                 + "UserID INT,"
-                + "FOREIGN KEY (UserID) REFERENCES \"User\"(ID)" // ID или Username
+                + "FOREIGN KEY (UserID) REFERENCES \"User\"(ID)"
                 + ");";
 
         createMessageTableQuery = "CREATE TABLE IF NOT EXISTS \"Message\" ("
