@@ -75,4 +75,37 @@ public class ChatDBManager {
         }
         return null;
     }
+
+    public void insertQuery(String query,String... values) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            for(int i = 0; i < values.length; i++){
+                preparedStatement.setString(i + 1, values[i]);
+            }
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
