@@ -5,6 +5,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
+
+import org.json.JSONObject;
+
+import java.util.Base64;
 
 public class HelloWorldServer {
 
@@ -31,17 +36,26 @@ public class HelloWorldServer {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            String clientMessage = reader.readLine();
-            System.out.println("Received from client: " + clientMessage);
-            String[] parts = clientMessage.split(";");
-            String userName = parts[0];
-            String email = parts[1];
-            String password = parts[2];
+            String requestData = reader.readLine();
+            System.out.println("Received JSON data: " + requestData);
+
+
+            JSONObject json = new JSONObject(requestData);
+            String encodedUserName = json.getString("encodedUserName");
+            String encodedEmail = json.getString("encodedEmail");
+            String hashedPassword = json.getString("hashedPassword");
+
+            String decodedUserName =  ChatDBManager.base64Decode(encodedUserName);
+            String decodedEmail =  ChatDBManager.base64Decode(encodedEmail);
+
+            System.out.println("UserName: " + decodedUserName);
+            System.out.println("Email: " + decodedEmail);
+            System.out.println("Password: " + hashedPassword);
 
             String query = "INSERT INTO \"User\"(username, email, password) VALUES (?, ?, ?)";
 
             ChatDBManager chatDBManager = ChatDBManager.getInstance();
-            chatDBManager.insertQuery(query, userName, email, password);
+            chatDBManager.insertQuery(query, decodedUserName, decodedEmail, hashedPassword);
 
             String response = "User has registered";
 

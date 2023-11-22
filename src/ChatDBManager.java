@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import sql_statements.CreateTable;
 
@@ -87,6 +88,11 @@ public class ChatDBManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String base64Decode(String encodedValue) {
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedValue);
+        return new String(decodedBytes);
     }
 }
 
