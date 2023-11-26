@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import sql_statements.CreateTable;
 
@@ -28,7 +27,7 @@ public class ChatDBManager {
             throw new RuntimeException(e);
         }
     }
-    private ChatDBManager() {
+    ChatDBManager() {
         try {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
@@ -77,22 +76,17 @@ public class ChatDBManager {
         return null;
     }
 
-    public void insertQuery(String query,String... values) {
+    public void insertQuery(String query,String... columns) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
-            for(int i = 0; i < values.length; i++){
-                preparedStatement.setString(i + 1, values[i]);
+            for (int index = 0; index < columns.length; index++) {
+                preparedStatement.setString(index + 1, columns[index]);
             }
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static String base64Decode(String encodedValue) {
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedValue);
-        return new String(decodedBytes);
     }
 }
 

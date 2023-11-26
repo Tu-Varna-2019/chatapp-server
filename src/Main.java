@@ -4,8 +4,12 @@ public class Main {
         String sqlGetDatabases = "SELECT datname FROM pg_database;";
 
         ChatDBManager chatDBManager = ChatDBManager.getInstance();
+        SocketConnection socketConnection = SocketConnection.getInstance();
+
 
         String[] queryResult = chatDBManager.executeQuery(sqlGetDatabases, "datname");
+
+
 
     }
 }

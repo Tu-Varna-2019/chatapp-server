@@ -1,8 +1,8 @@
-public class ThreadTest {
-
+public class ClientThread {
     private static int sharedVariable = 0;
+    private static ClientThread instance;
 
-    public static void main(String[] args) {
+    ClientThread() {
         Thread thread1 = new Thread(new Task("Thread 1"));
         Thread thread2 = new Thread(new Task("Thread 2"));
         Thread thread3 = new Thread(new Task("Thread 3"));
@@ -30,6 +30,13 @@ public class ThreadTest {
 
     }
 
+    public static ClientThread getInstance(){
+        if(instance == null){
+            instance = new ClientThread();
+        }
+        return instance;
+    }
+
     static class Task implements Runnable {
         private String name;
 
@@ -39,7 +46,7 @@ public class ThreadTest {
 
         @Override
         public void run() {
-            synchronized (ThreadTest.class) {
+            synchronized (ClientThread.class) {
                 System.out.println(name + " locked the shared variable " + sharedVariable);
 
                 if(Thread.holdsLock(sharedVariable)){
