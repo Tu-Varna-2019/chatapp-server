@@ -19,7 +19,7 @@ public class ChatDBManager {
     // Define the constructor as private to prevent direct instantiation of the
     // class (aka singleton)
 
-    private void executeStatement(String tableQuery){
+    private void executeStatement(String tableQuery) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
             System.out.println("Table created successfully!");
@@ -27,7 +27,8 @@ public class ChatDBManager {
             throw new RuntimeException(e);
         }
     }
-    ChatDBManager() {
+
+    private ChatDBManager() {
         try {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
@@ -55,12 +56,11 @@ public class ChatDBManager {
         return this.connection;
     }
 
-
     public String[] executeQuery(String query, String columns) {
         List<String> queryResultList = new ArrayList<String>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
-             ResultSet rs = pst.executeQuery()) {
+                ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
                 // TODO: check for cases to getInt, getDouble, etc.
@@ -76,7 +76,7 @@ public class ChatDBManager {
         return null;
     }
 
-    public void insertQuery(String query,String... columns) {
+    public void insertQuery(String query, String... columns) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (int index = 0; index < columns.length; index++) {
@@ -89,23 +89,3 @@ public class ChatDBManager {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
