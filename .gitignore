@@ -167,3 +167,5 @@ cython_debug/
 # VSCode
 .vs/
 *.class
+/out/
+!/out/production/Tu-Varna-Masters-Winter-JavaNetwork-Project-Chat/Main.class
