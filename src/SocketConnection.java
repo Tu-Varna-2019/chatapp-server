@@ -1,11 +1,14 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.logging.Logger;
 
 import helpers.Utils;
 import org.json.JSONObject;
 
 public class SocketConnection {
+
+    private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
 
     private final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
@@ -14,11 +17,11 @@ public class SocketConnection {
 
     SocketConnection() {
         try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
-            System.out.println("Server is listening on port " + PORT_NUMBER);
+            logger.info("Server is listening on port " + PORT_NUMBER);
 
             while (true) {
                 clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket.getInetAddress());
+                logger.info("Client connected: " + clientSocket.getInetAddress());
 
                 new Thread(() -> eventHandler()).start();
             }
@@ -38,9 +41,9 @@ public class SocketConnection {
             String decodedPassword) {
         try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            System.out.println("UserName: " + decodedUserName);
-            System.out.println("Email: " + decodedEmail);
-            System.out.println("Password: " + decodedPassword);
+            logger.info("UserName: " + decodedUserName);
+            logger.info("Email: " + decodedEmail);
+            logger.info("Password: " + decodedPassword);
 
             String query = "INSERT INTO \"User\"(username, email, password) VALUES (?, ?, ?)";
 
@@ -60,11 +63,11 @@ public class SocketConnection {
     private static void eventHandler() {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
             String requestData = reader.readLine();
-            System.out.println("Received JSON data: " + requestData);
+            logger.info("Received JSON data: " + requestData);
 
             JSONObject json = new JSONObject(requestData);
             String eventType = Utils.base64Decode(json.getString("encodedEventType"));
-            System.out.println(eventType);
+            logger.info(eventType);
 
             handleEventType(eventType, json);
         } catch (IOException e) {
@@ -86,7 +89,7 @@ public class SocketConnection {
                 break;
 
             default:
-                System.out.println("Invalid Event Type");
+                logger.info("Invalid Event Type");
         }
     }
 }

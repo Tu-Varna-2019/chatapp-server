@@ -5,9 +5,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import sql_statements.CreateTable;
 
 public class ChatDBManager {
+    private static final Logger logger = Logger.getLogger(ChatDBManager.class.getName());
+
     private final String URL = System.getenv("POSTGRE_URL");
     private final String USERNAME = System.getenv("POSTGRE_USERNAME");
     private String PASSWORD = System.getenv("POSTGRE_PASSWORD");
@@ -22,7 +26,7 @@ public class ChatDBManager {
     private void executeStatement(String tableQuery) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
-            System.out.println("Table created successfully!");
+            logger.info("Table created successfully!");
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -41,7 +45,7 @@ public class ChatDBManager {
             executeStatement(CreateTable.getCreateMessageTableQuery());
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            logger.info(e.getMessage());
         }
     }
 
@@ -66,12 +70,12 @@ public class ChatDBManager {
                 // TODO: check for cases to getInt, getDouble, etc.
                 // Example: int id = rs.getInt("id");
                 queryResultList.add(rs.getString(columns));
-                System.out.println("Received columns -> " + rs.getString(columns));
+                logger.info("Received columns -> " + rs.getString(columns));
 
             }
             return queryResultList.toArray(new String[queryResultList.size()]);
         } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
+            logger.info(ex.getMessage());
         }
         return null;
     }
