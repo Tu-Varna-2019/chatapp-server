@@ -5,8 +5,10 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
+
+import controller.events.EventHandler;
+import controller.events.EventHandlerRegistry;
 import controller.helpers.Utils;
-import model.database.ChatDBManager;
 
 public class SocketConnection {
 
@@ -14,8 +16,14 @@ public class SocketConnection {
 
     private final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
-    private static final ChatDBManager chatDBManager = ChatDBManager.getInstance();
     private static Socket clientSocket;
+
+    public static SocketConnection getInstance() {
+        if (instance == null) {
+            instance = new SocketConnection();
+        }
+        return instance;
+    }
 
     SocketConnection() {
         try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
@@ -25,73 +33,41 @@ public class SocketConnection {
                 clientSocket = serverSocket.accept();
                 logger.info("Client connected: " + clientSocket.getInetAddress());
 
-                new Thread(() -> eventHandler()).start();
+                new Thread(() -> handleClientRequest()).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static SocketConnection getInstance() {
-        if (instance == null) {
-            instance = new SocketConnection();
-        }
-        return instance;
-    }
+    private void handleClientRequest() {
+        try {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-    private static void signUp(String decodedUserName, String decodedEmail,
-            String decodedPassword) {
-        try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
+            String payload = reader.readLine();
+            JSONObject jsonPayload = new JSONObject(payload);
+            logger.info("Received payload: " + payload);
 
-            logger.info("UserName: " + decodedUserName);
-            logger.info("Email: " + decodedEmail);
-            logger.info("Password: " + decodedPassword);
+            String eventType = Utils.base64Decode(jsonPayload.getString("encodedEventType"));
+            logger.info("Event type received: " + eventType);
 
-            String query = "INSERT INTO \"User\"(username, email, password) VALUES (?, ?, ?)";
+            EventHandler eventHandler = EventHandlerRegistry.getEventHandler(eventType);
 
-            chatDBManager.insertQuery(query, decodedUserName, decodedEmail, decodedPassword);
+            if (eventHandler != null) {
 
-            String response = "User has registered";
+                String response = eventHandler.handleEvent(jsonPayload);
 
-            writer.write(response);
-            writer.newLine();
-            writer.flush();
-
+                logger.info("Response: " + response);
+                writer.write(response);
+                writer.newLine();
+                writer.flush();
+            } else {
+                logger.info("Error, unknown event: " + eventHandler);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void eventHandler() {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
-            String requestData = reader.readLine();
-            logger.info("Received JSON data: " + requestData);
-
-            JSONObject json = new JSONObject(requestData);
-            String eventType = Utils.base64Decode(json.getString("encodedEventType"));
-            logger.info(eventType);
-
-            handleEventType(eventType, json);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void handleEventType(String eventType, JSONObject json) {
-        switch (eventType) {
-            case "SignUp":
-                String decodedUserName = Utils.base64Decode(json.getString("encodedUserName"));
-                String decodedEmail = Utils.base64Decode(json.getString("encodedEmail"));
-                String decodedPassword = Utils.base64Decode(json.getString("encodedPassword"));
-                signUp(decodedUserName, decodedEmail, decodedPassword);
-                break;
-
-            case "Login":
-                // Future login logic
-                break;
-
-            default:
-                logger.info("Invalid Event Type");
-        }
-    }
 }
