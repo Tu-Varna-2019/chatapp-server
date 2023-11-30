@@ -1,4 +1,4 @@
-package sql_statements;
+package model.database.sql_statements;
 
 public class CreateTable {
 

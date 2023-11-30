@@ -1,10 +1,12 @@
+package view;
+
+import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Logger;
-
-import helpers.Utils;
-import org.json.JSONObject;
+import controller.helpers.Utils;
+import model.database.ChatDBManager;
 
 public class SocketConnection {
 

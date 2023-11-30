@@ -1,3 +1,5 @@
+package model.database;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import sql_statements.CreateTable;
+import model.database.sql_statements.CreateTable;
 
 public class ChatDBManager {
     private static final Logger logger = Logger.getLogger(ChatDBManager.class.getName());

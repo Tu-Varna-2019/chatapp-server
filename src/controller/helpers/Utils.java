@@ -1,4 +1,4 @@
-package helpers;
+package controller.helpers;
 
 import java.util.Base64;
 

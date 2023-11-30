@@ -1,3 +1,5 @@
+package view.thread;
+
 public class ClientThread {
     private static int sharedVariable = 0;
     private static ClientThread instance;
@@ -30,8 +32,8 @@ public class ClientThread {
 
     }
 
-    public static ClientThread getInstance(){
-        if(instance == null){
+    public static ClientThread getInstance() {
+        if (instance == null) {
             instance = new ClientThread();
         }
         return instance;
@@ -49,7 +51,7 @@ public class ClientThread {
             synchronized (ClientThread.class) {
                 System.out.println(name + " locked the shared variable " + sharedVariable);
 
-                if(Thread.holdsLock(sharedVariable)){
+                if (Thread.holdsLock(sharedVariable)) {
                     System.out.println("Variable is locked");
                 } else {
                     System.out.println("Variable is not locked");
