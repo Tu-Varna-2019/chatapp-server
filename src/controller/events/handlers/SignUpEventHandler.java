@@ -1,27 +1,22 @@
 package controller.events.handlers;
 
-import org.json.JSONObject;
-
 import controller.events.SharedDataEventHandler;
-import controller.helpers.Utils;
+import controller.helpers.MaskData;
 
 public class SignUpEventHandler extends SharedDataEventHandler {
 
     @Override
-    public String handleEvent(JSONObject jsonPayload) {
+    public String handleEvent(String... args) {
 
-        String username = Utils.base64Decode(jsonPayload.getString("encodedUserName"));
-        String email = Utils.base64Decode(jsonPayload.getString("encodedEmail"));
-        String password = Utils.base64Decode(jsonPayload.getString("encodedPassword"));
+        String username = args[0];
+        String email = args[1];
+        String password = MaskData.hashPassword(args[2]);
 
-        logger.info("UserName: " + username);
-        logger.info("Email: " + email);
-        logger.info("Password: " + password);
+        logger.info("UserName: {} \nEmail: {} \nPassword: {}", username, email, password);
 
         chatDBManager.insertQuery(insertStatement.INSERT_USER, username, email, password);
 
         return "User has registered";
 
     }
-
 }

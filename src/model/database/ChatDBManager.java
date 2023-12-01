@@ -7,12 +7,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import model.database.sql_statements.CreateTable;
 
 public class ChatDBManager {
-    private static final Logger logger = Logger.getLogger(ChatDBManager.class.getName());
+    private static final Logger logger = LogManager.getLogger(ChatDBManager.class.getName());
 
     private final String URL = System.getenv("POSTGRE_URL");
     private final String USERNAME = System.getenv("POSTGRE_USERNAME");
@@ -28,7 +30,7 @@ public class ChatDBManager {
     private void executeStatement(String tableQuery) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
-            logger.info("Table created successfully!");
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -38,13 +40,13 @@ public class ChatDBManager {
         try {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
-            executeStatement(CreateTable.getCreateUserTableQuery());
+            executeStatement(CreateTable.createUserTableQuery);
 
-            executeStatement(CreateTable.getCreateFriendRequestTableQuery());
+            executeStatement(CreateTable.createFriendRequestTableQuery);
 
-            executeStatement(CreateTable.getCreateGroupChatTableQuery());
+            executeStatement(CreateTable.createGroupChatTableQuery);
 
-            executeStatement(CreateTable.getCreateMessageTableQuery());
+            executeStatement(CreateTable.createMessageTableQuery);
 
         } catch (SQLException e) {
             logger.info(e.getMessage());
@@ -72,7 +74,7 @@ public class ChatDBManager {
                 // TODO: check for cases to getInt, getDouble, etc.
                 // Example: int id = rs.getInt("id");
                 queryResultList.add(rs.getString(columns));
-                logger.info("Received columns -> " + rs.getString(columns));
+                logger.info("Received columns -> {}", rs.getString(columns));
 
             }
             return queryResultList.toArray(new String[queryResultList.size()]);

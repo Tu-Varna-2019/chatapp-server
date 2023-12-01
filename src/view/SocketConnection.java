@@ -4,15 +4,16 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import controller.events.EventHandler;
 import controller.events.EventHandlerRegistry;
-import controller.helpers.Utils;
+import controller.helpers.MaskData;
 
 public class SocketConnection {
 
-    private static final Logger logger = Logger.getLogger(SocketConnection.class.getName());
+    private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
 
     private final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
@@ -27,11 +28,11 @@ public class SocketConnection {
 
     SocketConnection() {
         try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
-            logger.info("Server is listening on port " + PORT_NUMBER);
+            logger.info("Server is listening on port {} ", PORT_NUMBER);
 
             while (true) {
                 clientSocket = serverSocket.accept();
-                logger.info("Client connected: " + clientSocket.getInetAddress());
+                logger.info("Client connected: {}", clientSocket.getInetAddress());
 
                 new Thread(() -> handleClientRequest()).start();
             }
@@ -47,25 +48,26 @@ public class SocketConnection {
 
             String payload = reader.readLine();
             JSONObject jsonPayload = new JSONObject(payload);
-            logger.info("Received payload: " + payload);
+            logger.info("Received payload: {}", payload);
 
-            String eventType = Utils.base64Decode(jsonPayload.getString("encodedEventType"));
-            logger.info("Event type received: " + eventType);
+            String eventType = MaskData.base64DecodeSelectedValue(jsonPayload.getString("eventType"));
+            logger.info("Event type received: {}", eventType);
 
             EventHandler eventHandler = EventHandlerRegistry.getEventHandler(eventType);
 
             if (eventHandler != null) {
 
-                String response = eventHandler.handleEvent(jsonPayload);
+                String response = eventHandler.handleEvent(MaskData.base64Decode(jsonPayload));
 
-                logger.info("Response: " + response);
+                logger.info("Response: {}", response);
                 writer.write(response);
                 writer.newLine();
                 writer.flush();
             } else {
-                logger.info("Error, unknown event: " + eventHandler);
+                logger.error("Error, unknown event: {}", eventHandler);
             }
         } catch (IOException e) {
+            logger.error("Exception: {}", e.getCause());
             throw new RuntimeException(e);
         }
     }
