@@ -169,3 +169,4 @@ cython_debug/
 *.class
 /out/
 !/out/production/Tu-Varna-Masters-Winter-JavaNetwork-Project-Chat/Main.class
+.dccache
