@@ -4,6 +4,9 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -14,10 +17,9 @@ import controller.helpers.MaskData;
 public class SocketConnection {
 
     private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
-
     private final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
-    private static Socket clientSocket;
+    private final ExecutorService threadPool;
 
     public static SocketConnection getInstance() {
         if (instance == null) {
@@ -26,25 +28,25 @@ public class SocketConnection {
         return instance;
     }
 
-    SocketConnection() {
+    private SocketConnection() {
+        threadPool = Executors.newCachedThreadPool();
+
         try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
             logger.info("Server is listening on port {} ", PORT_NUMBER);
 
             while (true) {
-                clientSocket = serverSocket.accept();
+                Socket clientSocket = serverSocket.accept();
                 logger.info("Client connected: {}", clientSocket.getInetAddress());
-
-                new Thread(() -> handleClientRequest()).start();
+                threadPool.submit(() -> handleClientRequest(clientSocket));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("Server Socket Exception: ", e);
         }
     }
 
-    private void handleClientRequest() {
-        try {
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+    private void handleClientRequest(Socket clientSocket) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
             String payload = reader.readLine();
             JSONObject jsonPayload = new JSONObject(payload);
@@ -56,20 +58,17 @@ public class SocketConnection {
             EventHandler eventHandler = EventHandlerRegistry.getEventHandler(eventType);
 
             if (eventHandler != null) {
-
                 String response = eventHandler.handleEvent(MaskData.base64Decode(jsonPayload));
-
                 logger.info("Response: {}", response);
                 writer.write(response);
                 writer.newLine();
                 writer.flush();
             } else {
-                logger.error("Error, unknown event: {}", eventHandler);
+                logger.error("Error, unknown event: {}", eventType);
             }
+
         } catch (IOException e) {
-            logger.error("Exception: {}", e.getCause());
-            throw new RuntimeException(e);
+            logger.error("I/O Exception in client request handling: ", e);
         }
     }
-
 }

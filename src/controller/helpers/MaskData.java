@@ -1,24 +1,26 @@
 package controller.helpers;
 
 import java.util.Base64;
+import java.util.TreeMap;
 
 import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class MaskData {
 
+    // Return string of decoded payload and return them alphabetically
+    // Example: [username,email,password]
+    // Result: [email,password,username]
     public static String[] base64Decode(JSONObject jsonPayload) {
         JSONObject dataObject = jsonPayload.getJSONObject("data");
-
-        String[] decodedValues = new String[dataObject.length()];
-        int index = 0;
+        TreeMap<String, String> sortedMap = new TreeMap<>();
 
         for (String key : dataObject.keySet()) {
             String encodedValue = dataObject.getString(key);
             byte[] decodedBytes = Base64.getDecoder().decode(encodedValue);
-            decodedValues[index++] = new String(decodedBytes);
+            sortedMap.put(key, new String(decodedBytes));
         }
-        return decodedValues;
+        return sortedMap.values().toArray(new String[0]);
     }
 
     public static String base64DecodeSelectedValue(String encodedValue) {

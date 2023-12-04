@@ -170,3 +170,4 @@ cython_debug/
 /out/
 !/out/production/Tu-Varna-Masters-Winter-JavaNetwork-Project-Chat/Main.class
 .dccache
+src/Playground.java

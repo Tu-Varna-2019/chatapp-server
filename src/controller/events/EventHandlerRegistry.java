@@ -3,6 +3,7 @@ package controller.events;
 import java.util.HashMap;
 import java.util.Map;
 
+import controller.events.handlers.LoginEventHandler;
 import controller.events.handlers.SignUpEventHandler;
 
 /*
@@ -14,13 +15,14 @@ public class EventHandlerRegistry {
 
     static {
         eventHandlerMap.put("SignUp", new SignUpEventHandler());
+        eventHandlerMap.put("Login", new LoginEventHandler());
     }
 
     /*
      * This method returns the appropriate event handler based on the event type
-     * 
+     *
      * @param eventType (SignUp,Login...) coming from the client
-     * 
+     *
      * @return @Overridden handleEvent method
      */
     public static EventHandler getEventHandler(String eventType) {

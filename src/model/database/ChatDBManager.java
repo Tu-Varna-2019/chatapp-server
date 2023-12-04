@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import model.User;
 import model.database.sql_statements.CreateTable;
 
 public class ChatDBManager {
@@ -26,7 +27,6 @@ public class ChatDBManager {
 
     // Define the constructor as private to prevent direct instantiation of the
     // class (aka singleton)
-
     private void executeStatement(String tableQuery) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
@@ -41,11 +41,8 @@ public class ChatDBManager {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
             executeStatement(CreateTable.createUserTableQuery);
-
             executeStatement(CreateTable.createFriendRequestTableQuery);
-
             executeStatement(CreateTable.createGroupChatTableQuery);
-
             executeStatement(CreateTable.createMessageTableQuery);
 
         } catch (SQLException e) {
@@ -64,7 +61,7 @@ public class ChatDBManager {
         return this.connection;
     }
 
-    public String[] executeQuery(String query, String columns) {
+    public List<String> executeQuery(String query, String... columns) {
         List<String> queryResultList = new ArrayList<String>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
@@ -73,11 +70,34 @@ public class ChatDBManager {
 
                 // TODO: check for cases to getInt, getDouble, etc.
                 // Example: int id = rs.getInt("id");
-                queryResultList.add(rs.getString(columns));
-                logger.info("Received columns -> {}", rs.getString(columns));
+                StringBuilder row = new StringBuilder();
 
+                for (String column : columns) {
+                    row.append(rs.getString(column)).append(" ");
+                }
+
+                String rowResult = row.toString().trim();
+                queryResultList.add(rowResult);
+                logger.info("Received row -> {}", rowResult);
             }
-            return queryResultList.toArray(new String[queryResultList.size()]);
+            return queryResultList;
+        } catch (SQLException ex) {
+            logger.info(ex.getMessage());
+        }
+        return null;
+    }
+
+    public List<User> getUsersQuery(String query) {
+        List<User> queryResultList = new ArrayList<User>();
+
+        try (PreparedStatement pst = connection.prepareStatement(query);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                User user = new User(rs.getString("username"), rs.getString("email"), rs.getString("password"));
+
+                queryResultList.add(user);
+            }
+            return queryResultList;
         } catch (SQLException ex) {
             logger.info(ex.getMessage());
         }
