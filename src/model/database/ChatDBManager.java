@@ -1,5 +1,6 @@
 package model.database;
 
+import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,10 +8,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import model.GroupChat;
 import model.User;
 import model.database.sql_statements.CreateTable;
 
@@ -93,9 +94,31 @@ public class ChatDBManager {
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
-                User user = new User(rs.getString("username"), rs.getString("email"), rs.getString("password"));
+                User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"),
+                        rs.getString("password"));
 
                 queryResultList.add(user);
+            }
+            return queryResultList;
+        } catch (SQLException ex) {
+            logger.info(ex.getMessage());
+        }
+        return null;
+    }
+
+    public List<GroupChat> getGroupChatQuery(String query) {
+        List<GroupChat> queryResultList = new ArrayList<GroupChat>();
+
+        try (PreparedStatement pst = connection.prepareStatement(query);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+
+                Array userIdsArray = rs.getArray("userids");
+                Integer[] userIds = (Integer[]) userIdsArray.getArray();
+
+                GroupChat groupChat = new GroupChat(rs.getInt("id"), rs.getString("name"), userIds);
+
+                queryResultList.add(groupChat);
             }
             return queryResultList;
         } catch (SQLException ex) {

@@ -1,6 +1,7 @@
 package model;
 
 public class User {
+    private int id;
     private String email;
     private String username;
     private String password;
@@ -8,7 +9,8 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(int id, String username, String email, String password) {
+        this.id = id;
         this.email = email;
         this.username = username;
         this.password = password;
@@ -16,6 +18,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getPassword() {
@@ -32,7 +38,8 @@ public class User {
 
     @Override
     public String toString() {
-        return "User [email=" + email + ", password=" + password + ", username=" + username + "]";
+        return String.format("{\"email\":\"%s\", \"password\":\"%s\", \"username\":\"%s\"}",
+                email, password, username);
     }
 
 }

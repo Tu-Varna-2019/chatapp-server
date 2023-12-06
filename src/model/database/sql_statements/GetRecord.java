@@ -6,4 +6,19 @@ public class GetRecord {
 
         return "SELECT * FROM \"User\" WHERE email='" + email + "';";
     };
+
+    public final String getUserEQID(int id) {
+
+        return "SELECT * FROM \"User\" WHERE id= " + id + ";";
+    };
+
+    public final String getUsersByIDS(String userIds) {
+
+        return "SELECT * FROM \"User\" WHERE id IN (" + userIds + ");";
+    };
+
+    public final String getGroupChatEQID(int id) {
+
+        return "SELECT * FROM \"GroupChat\" WHERE " + id + " = ANY(userids);";
+    };
 };
