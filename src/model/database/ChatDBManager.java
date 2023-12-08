@@ -11,9 +11,11 @@ import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
+import model.FriendRequest;
 import model.GroupChat;
 import model.User;
 import model.database.sql_statements.CreateTable;
+import model.database.sql_statements.GetRecord;
 
 public class ChatDBManager {
     private static final Logger logger = LogManager.getLogger(ChatDBManager.class.getName());
@@ -21,6 +23,8 @@ public class ChatDBManager {
     private final String URL = System.getenv("POSTGRE_URL");
     private final String USERNAME = System.getenv("POSTGRE_USERNAME");
     private String PASSWORD = System.getenv("POSTGRE_PASSWORD");
+
+    private final GetRecord getRecord = new GetRecord();
 
     // singleton
     private static ChatDBManager instance;
@@ -119,6 +123,29 @@ public class ChatDBManager {
                 GroupChat groupChat = new GroupChat(rs.getInt("id"), rs.getString("name"), userIds);
 
                 queryResultList.add(groupChat);
+            }
+            return queryResultList;
+        } catch (SQLException ex) {
+            logger.info(ex.getMessage());
+        }
+        return null;
+    }
+
+    public List<FriendRequest> getFriendRequestQuery(String query) {
+        List<FriendRequest> queryResultList = new ArrayList<FriendRequest>();
+
+        try (PreparedStatement pst = connection.prepareStatement(query);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+
+                Integer userIdsArray = rs.getInt("recipientid");
+
+                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID(userIdsArray));
+
+                FriendRequest friendRequest = new FriendRequest(rs.getInt("id"), rs.getString("status"),
+                        dbRetrievedUser.get(0));
+
+                queryResultList.add(friendRequest);
             }
             return queryResultList;
         } catch (SQLException ex) {

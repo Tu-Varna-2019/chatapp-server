@@ -3,6 +3,7 @@ package controller.events;
 import java.util.HashMap;
 import java.util.Map;
 
+import controller.events.handlers.GetFriendRequestsAuthUserEventHandler;
 import controller.events.handlers.GetGroupChatsAuthUserEventHandler;
 import controller.events.handlers.LoginEventHandler;
 import controller.events.handlers.SignUpEventHandler;
@@ -18,6 +19,7 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("SignUp", new SignUpEventHandler());
         eventHandlerMap.put("Login", new LoginEventHandler());
         eventHandlerMap.put("GetGroupChatsAuthUser", new GetGroupChatsAuthUserEventHandler());
+        eventHandlerMap.put("GetFriendRequestsAuthUser", new GetFriendRequestsAuthUserEventHandler());
     }
 
     /*

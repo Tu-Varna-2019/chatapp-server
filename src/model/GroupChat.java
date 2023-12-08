@@ -1,6 +1,5 @@
 package model;
 
-import java.util.Arrays;
 import java.util.List;
 
 import controller.helpers.Helpers;
