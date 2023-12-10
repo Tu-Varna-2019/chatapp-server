@@ -19,11 +19,11 @@ jobs:
 
       - name: Compile Java Main
         run: |
-          javac src/Main.java
+          javac -d . $(find . -name "*.java")
 
       - name: Run Java Main
         run: |
-          java -cp src Main
+          java -cp . Main
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
