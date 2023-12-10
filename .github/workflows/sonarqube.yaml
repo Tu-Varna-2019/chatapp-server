@@ -14,16 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          #java-version: "17"
+          java-version: "17"
           fetch-depth: 0
 
-        # - name: Compile Java Project
-        #   run: |
-        #     javac Project.java
+      - name: Compile Java Main
+        run: |
+          javac Main.java
 
-        # - name: Run Java Project
-        #   run: |
-        #     java Project
+      - name: Run Java Main
+        run: |
+          java Main
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
