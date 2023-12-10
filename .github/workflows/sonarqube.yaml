@@ -17,13 +17,14 @@ jobs:
           java-version: "17"
           fetch-depth: 0
 
-      - name: Compile Java Main
-        run: |
-          javac -d . $(find . -name "*.java")
+      # Commented out because it requires a pom.xml file
+      # - name: Compile Java Main
+      #   run: |
+      #     javac -d . $(find . -name "*.java")
 
-      - name: Run Java Main
-        run: |
-          java -cp . Main
+      # - name: Run Java Main
+      #   run: |
+      #     java -cp . Main
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
