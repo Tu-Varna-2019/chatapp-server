@@ -18,13 +18,13 @@ jobs:
           fetch-depth: 0
 
       # Commented out because it requires a pom.xml file
-      - name: Compile Java Main
-        run: |
-          javac -d . $(find . -name "*.java")
+      # - name: Compile Java Main
+      #   run: |
+      #     javac -d . $(find . -name "*.java")
 
-      - name: Run Java Main
-        run: |
-          java -cp . Main
+      # - name: Run Java Main
+      #   run: |
+      #     java -cp . Main
 
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
@@ -41,12 +41,6 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }} #OPTIONAL
-          SONAR_PROJECT_KEY: Tu-Varna-2019_Tu-Varna-Masters-Winter-JavaNetwork-Project-Chat_AYue_vmmkyMQ8V9j1VOz
-          SONAR_SOURCES: src
-          SONAR_LANGUAGE: java
-          SONAR_PROJECT_NAME: Tu-Varna-Masters-Winter-JavaNetwork-Project-Chat
-          SONAR_JAVA_BINARIES: target
-          SONAR_JAVA_LIBRARIES: lib/*.jar
 
       # Optionally you can use the output from the Quality Gate in another step.
       # The possible outputs of the `quality-gate-status` variable are `PASSED`, `WARN` or `FAILED`.
