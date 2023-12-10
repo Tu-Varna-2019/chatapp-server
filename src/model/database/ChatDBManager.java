@@ -98,14 +98,16 @@ public class ChatDBManager {
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
+
                 User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"),
                         rs.getString("password"));
 
                 queryResultList.add(user);
             }
             return queryResultList;
+
         } catch (SQLException ex) {
-            logger.info(ex.getMessage());
+            logger.error(ex.getMessage());
         }
         return null;
     }
