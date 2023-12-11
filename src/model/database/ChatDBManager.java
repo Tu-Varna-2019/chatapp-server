@@ -156,7 +156,7 @@ public class ChatDBManager {
         return null;
     }
 
-    public boolean deleteRecordQuery(String query) {
+    public boolean updateRecordQuery(String query) {
 
         try (PreparedStatement pst = connection.prepareStatement(query)) {
             int rowsAffected = pst.executeUpdate();

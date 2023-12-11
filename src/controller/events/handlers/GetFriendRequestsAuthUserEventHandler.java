@@ -3,9 +3,7 @@ package controller.events.handlers;
 import java.util.List;
 
 import controller.events.SharedDataEventHandler;
-import controller.helpers.Helpers;
 import model.FriendRequest;
-import model.GroupChat;
 import model.User;
 
 public class GetFriendRequestsAuthUserEventHandler extends SharedDataEventHandler {

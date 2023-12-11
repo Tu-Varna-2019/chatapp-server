@@ -21,7 +21,7 @@ public class DeleteAccountEventHandler extends SharedDataEventHandler {
                 if (isPasswordCorrect) {
 
                         boolean isDeleted = chatDBManager
-                                        .deleteRecordQuery(deleteRecord.DeleteUserEQID(dbRetrievedUser.get(0).getId()));
+                                        .updateRecordQuery(deleteRecord.DeleteUserEQID(dbRetrievedUser.get(0).getId()));
 
                         String status = !isDeleted ? "Failed" : "Success";
                         String message = !isDeleted ? "Incorrect email/password!" : "Successfully logged in!";

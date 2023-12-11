@@ -9,16 +9,19 @@ public class RenameUsernameEventHandler extends SharedDataEventHandler {
 
         @Override
         public String handleEvent(String... args) {
-                // args values: [email, password]
+                // args values: [email, SKIP - password,username]
                 String email = args[0];
-                logger.info("\nEmail: {}", email);
+                String username = args[2];
+                logger.info("\nEmail: {}\n Username: {}", email, username);
 
                 List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
 
+                logger.info("Now changing {} -> {}" + dbRetrievedUser.get(0).toString(), username);
+
                 if (!dbRetrievedUser.isEmpty()) {
                         boolean isUsernameUpdated = chatDBManager
-                                        .deleteRecordQuery(updateRecord.UpdateUsernameEQEmail(
-                                                        dbRetrievedUser.get(0).getUsername(),
+                                        .updateRecordQuery(updateRecord.UpdateUsernameEQEmail(
+                                                        username,
                                                         dbRetrievedUser.get(0).getEmail()));
 
                         String status = !isUsernameUpdated ? "Failed" : "Success";
