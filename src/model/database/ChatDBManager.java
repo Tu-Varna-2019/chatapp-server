@@ -156,6 +156,20 @@ public class ChatDBManager {
         return null;
     }
 
+    public boolean deleteRecordQuery(String query) {
+
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+            int rowsAffected = pst.executeUpdate();
+
+            if (rowsAffected > 0)
+                return true;
+
+        } catch (SQLException ex) {
+            logger.info(ex.getMessage());
+        }
+        return false;
+    }
+
     public void insertQuery(String query, String... columns) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
