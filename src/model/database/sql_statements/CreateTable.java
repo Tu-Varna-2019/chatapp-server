@@ -27,7 +27,7 @@ public class CreateTable {
                         + "AttachmentURL VARCHAR(255),"
                         + "TimeStamp TIMESTAMP,"
                         + "SenderID INT,"
-                        + "ChatID INT,"
+                        + "GroupChatID INT,"
                         + "FOREIGN KEY (SenderID) REFERENCES \"User\"(ID),"
                         + "FOREIGN KEY (ChatID) REFERENCES \"GroupChat\"(ID)"
                         + ");";

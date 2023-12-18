@@ -171,3 +171,5 @@ cython_debug/
 .dccache
 src/Playground.java
 .vscode/launch.json
+delete.json
+versions.json

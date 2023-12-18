@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 
 import model.FriendRequest;
 import model.GroupChat;
+import model.Message;
 import model.User;
 import model.database.sql_statements.CreateTable;
 import model.database.sql_statements.GetRecord;
@@ -148,6 +149,30 @@ public class ChatDBManager {
                         dbRetrievedUser.get(0));
 
                 queryResultList.add(friendRequest);
+            }
+            return queryResultList;
+        } catch (SQLException ex) {
+            logger.info(ex.getMessage());
+        }
+        return null;
+    }
+
+    public List<Message> getMessagesQuery(String query) {
+        List<Message> queryResultList = new ArrayList<Message>();
+
+        try (PreparedStatement pst = connection.prepareStatement(query);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+
+                Integer senderID = rs.getInt("senderid");
+
+                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID(senderID));
+
+                Message message = new Message(rs.getInt("id"), rs.getString("content"), rs.getString("attachmenturl"),
+                        rs.getTimestamp("timestamp"),
+                        dbRetrievedUser.get(0));
+
+                queryResultList.add(message);
             }
             return queryResultList;
         } catch (SQLException ex) {

@@ -7,6 +7,7 @@ import controller.events.handlers.ChangePasswordEventHandler;
 import controller.events.handlers.DeleteAccountEventHandler;
 import controller.events.handlers.GetFriendRequestsAuthUserEventHandler;
 import controller.events.handlers.GetGroupChatsAuthUserEventHandler;
+import controller.events.handlers.GetMessagesByGroupIDEventHandler;
 import controller.events.handlers.LoginEventHandler;
 import controller.events.handlers.RenameEmailEventHandler;
 import controller.events.handlers.RenameUsernameEventHandler;
@@ -28,6 +29,7 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("RenameUsername", new RenameUsernameEventHandler());
         eventHandlerMap.put("RenameEmail", new RenameEmailEventHandler());
         eventHandlerMap.put("ChangePassword", new ChangePasswordEventHandler());
+        eventHandlerMap.put("GetMessagesByGroupID", new GetMessagesByGroupIDEventHandler());
     }
 
     /*

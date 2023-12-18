@@ -4,18 +4,30 @@ import java.sql.Timestamp;
 
 public class Message {
 
+    private int id;
     private String content;
-    private String attchmentURL;
+    private String attachmentURL;
     private Timestamp timestamp;
+    private User sender;
 
-    public Message(String content, String attchmentURL, Timestamp timestamp) {
+    public Message(int id, String content, String attachmentURL, Timestamp timestamp, User sender) {
+        this.id = id;
         this.content = content;
-        this.attchmentURL = attchmentURL;
+        this.attachmentURL = attachmentURL;
         this.timestamp = timestamp;
+        this.sender = sender;
     }
 
-    public String getAttchmentURL() {
-        return attchmentURL;
+    public int getId() {
+        return id;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public String getAttachmentURL() {
+        return attachmentURL;
     }
 
     public String getContent() {
@@ -24,6 +36,13 @@ public class Message {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "{\"message\": {\"id\":\"%d\",\"content\":\"%s\",\"attachmentURL\":\"%s\",\"timestamp\":\"%s\", \"sender\":%s}}",
+                id, content, attachmentURL, timestamp.toString(), sender.toString());
     }
 
 }

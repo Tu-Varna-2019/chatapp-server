@@ -22,6 +22,11 @@ public class GetRecord {
         return "SELECT * FROM \"GroupChat\" WHERE " + id + " = ANY(userids);";
     };
 
+    public final String getMessageEQGroupID(int id) {
+
+        return "SELECT * FROM \"Message\" WHERE groupchatid= " + id + " ;";
+    };
+
     public final String getFriendRequestEQSenderID(int id) {
 
         return "SELECT * FROM \"FriendRequest\" WHERE senderid= " + id + " ;";
