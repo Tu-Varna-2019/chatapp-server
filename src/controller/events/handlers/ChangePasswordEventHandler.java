@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import controller.helpers.MaskData;
@@ -9,11 +10,10 @@ import model.User;
 public class ChangePasswordEventHandler extends SharedDataEventHandler {
 
         @Override
-        public String handleEvent(String... args) {
-                // args values: [email, old-password, new-password]
-                String email = args[0];
-                String oldPassword = args[1];
-                String newPassword = args[2];
+        public String handleEvent(TreeMap<String, String> payload) {
+                String email = payload.get("email");
+                String oldPassword = payload.get("password");
+                String newPassword = payload.get("username");
                 logger.info("\nReceived old Password: {} \n New Password: {}", oldPassword, newPassword);
 
                 List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));

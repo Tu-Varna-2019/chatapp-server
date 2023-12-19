@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import model.User;
@@ -8,10 +9,10 @@ import model.User;
 public class RenameUsernameEventHandler extends SharedDataEventHandler {
 
         @Override
-        public String handleEvent(String... args) {
+        public String handleEvent(TreeMap<String, String> payload) {
                 // args values: [email, SKIP - password,username]
-                String email = args[0];
-                String username = args[2];
+                String email = payload.get("email");
+                String username = payload.get("username");
                 logger.info("\nEmail: {}\n Username: {}", email, username);
 
                 List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));

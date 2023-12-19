@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import model.Message;
@@ -8,9 +9,9 @@ import model.Message;
 public class GetMessagesByGroupIDEventHandler extends SharedDataEventHandler {
 
         @Override
-        public String handleEvent(String... args) {
+        public String handleEvent(TreeMap<String, String> payload) {
                 // args values: [id]
-                Integer groupid = Integer.parseInt(args[0]);
+                Integer groupid = Integer.parseInt(payload.get("id"));
                 // JSON string formatter for final result
                 StringBuilder messagesJSON = new StringBuilder();
                 List<Message> dbRetrievedMessage = null;

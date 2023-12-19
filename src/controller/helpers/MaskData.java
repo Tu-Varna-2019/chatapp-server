@@ -7,20 +7,26 @@ import org.json.JSONObject;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class MaskData {
-
-    // Return string of decoded payload and return them alphabetically
-    // Example: [username,email,password]
-    // Result: [email,password,username]
-    public static String[] base64Decode(JSONObject jsonPayload) {
+    // Return a string map of decoded payload and return them
+    public static TreeMap<String, String> base64Decode(JSONObject jsonPayload) {
         JSONObject dataObject = jsonPayload.getJSONObject("data");
         TreeMap<String, String> sortedMap = new TreeMap<>();
+        decode(dataObject, sortedMap);
+        return sortedMap;
+    }
 
+    private static void decode(JSONObject dataObject, TreeMap<String, String> sortedMap) {
         for (String key : dataObject.keySet()) {
-            String encodedValue = dataObject.getString(key);
-            byte[] decodedBytes = Base64.getDecoder().decode(encodedValue);
-            sortedMap.put(key, new String(decodedBytes));
+            Object value = dataObject.get(key);
+            if (value instanceof JSONObject) {
+                decode((JSONObject) value, sortedMap);
+            } else if (value instanceof String) {
+                String encodedValue = (String) value;
+                byte[] decodedBytes = Base64.getDecoder().decode(encodedValue);
+                System.out.println(new String(decodedBytes));
+                sortedMap.put(key, new String(decodedBytes));
+            }
         }
-        return sortedMap.values().toArray(new String[0]);
     }
 
     public static String base64DecodeSelectedValue(String encodedValue) {
@@ -29,7 +35,6 @@ public class MaskData {
     }
 
     public static String hashPassword(String password) {
-
         String salt = BCrypt.gensalt();
         return BCrypt.hashpw(password, salt);
     }

@@ -5,12 +5,14 @@ import java.util.Map;
 
 import controller.events.handlers.ChangePasswordEventHandler;
 import controller.events.handlers.DeleteAccountEventHandler;
+import controller.events.handlers.DeleteMessageByGroupIDEventHandler;
 import controller.events.handlers.GetFriendRequestsAuthUserEventHandler;
 import controller.events.handlers.GetGroupChatsAuthUserEventHandler;
 import controller.events.handlers.GetMessagesByGroupIDEventHandler;
 import controller.events.handlers.LoginEventHandler;
 import controller.events.handlers.RenameEmailEventHandler;
 import controller.events.handlers.RenameUsernameEventHandler;
+import controller.events.handlers.SendMessageByGroupIDEventHandler;
 import controller.events.handlers.SignUpEventHandler;
 
 /*
@@ -30,6 +32,8 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("RenameEmail", new RenameEmailEventHandler());
         eventHandlerMap.put("ChangePassword", new ChangePasswordEventHandler());
         eventHandlerMap.put("GetMessagesByGroupID", new GetMessagesByGroupIDEventHandler());
+        eventHandlerMap.put("SendMessageByGroupID", new SendMessageByGroupIDEventHandler());
+        eventHandlerMap.put("deleteMessageByGroupID", new DeleteMessageByGroupIDEventHandler());
     }
 
     /*

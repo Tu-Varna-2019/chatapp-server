@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import controller.helpers.Helpers;
@@ -10,9 +11,9 @@ import model.User;
 public class GetGroupChatsAuthUserEventHandler extends SharedDataEventHandler {
 
         @Override
-        public String handleEvent(String... args) {
+        public String handleEvent(TreeMap<String, String> payload) {
                 // args values: [email, password]
-                String email = args[0];
+                String email = payload.get("email");
                 // JSON string formatter for final result
                 StringBuilder groupChatsJSON = new StringBuilder();
                 List<GroupChat> dbRetrievedGroupChat = null;

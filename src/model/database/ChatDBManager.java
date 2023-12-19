@@ -1,5 +1,6 @@
 package model.database;
 
+import java.sql.Timestamp;
 import java.sql.Array;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -65,32 +66,6 @@ public class ChatDBManager {
 
     public Connection getConnection() {
         return this.connection;
-    }
-
-    public List<String> executeQuery(String query, String... columns) {
-        List<String> queryResultList = new ArrayList<String>();
-
-        try (PreparedStatement pst = connection.prepareStatement(query);
-                ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) {
-
-                // TODO: check for cases to getInt, getDouble, etc.
-                // Example: int id = rs.getInt("id");
-                StringBuilder row = new StringBuilder();
-
-                for (String column : columns) {
-                    row.append(rs.getString(column)).append(" ");
-                }
-
-                String rowResult = row.toString().trim();
-                queryResultList.add(rowResult);
-                logger.info("Received row -> {}", rowResult);
-            }
-            return queryResultList;
-        } catch (SQLException ex) {
-            logger.info(ex.getMessage());
-        }
-        return null;
     }
 
     public List<User> getUsersQuery(String query) {
@@ -195,11 +170,16 @@ public class ChatDBManager {
         return false;
     }
 
-    public void insertQuery(String query, String... columns) {
+    public void insertQuery(String query, Object... columns) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             for (int index = 0; index < columns.length; index++) {
-                preparedStatement.setString(index + 1, columns[index]);
+                if (columns[index] instanceof String)
+                    preparedStatement.setString(index + 1, (String) columns[index]);
+                else if (columns[index] instanceof Timestamp)
+                    preparedStatement.setTimestamp(index + 1, (Timestamp) columns[index]);
+                else if (columns[index] instanceof Integer)
+                    preparedStatement.setInt(index + 1, (Integer) columns[index]);
             }
             preparedStatement.executeUpdate();
 

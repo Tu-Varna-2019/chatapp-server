@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import controller.helpers.MaskData;
@@ -9,11 +10,10 @@ import model.User;
 public class SignUpEventHandler extends SharedDataEventHandler {
 
     @Override
-    public String handleEvent(String... args) {
-        // args values: [email, password, username]
-        String email = args[0];
-        String password = MaskData.hashPassword(args[1]);
-        String username = args[2];
+    public String handleEvent(TreeMap<String, String> payload) {
+        String email = payload.get("email");
+        String password = MaskData.hashPassword(payload.get("password"));
+        String username = payload.get("username");
 
         logger.info("UserName: {} \nEmail: {} \nPassword: {}", username, email, password);
 
