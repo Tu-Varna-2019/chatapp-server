@@ -1,21 +1,16 @@
 package model.database;
 
-import java.sql.Array;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-
 import model.FriendRequest;
 import model.GroupChat;
 import model.User;
 import model.database.sql_statements.CreateTable;
 import model.database.sql_statements.GetRecord;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatDBManager {
     private static final Logger logger = LogManager.getLogger(ChatDBManager.class.getName());
@@ -96,7 +91,7 @@ public class ChatDBManager {
         List<User> queryResultList = new ArrayList<User>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
-                ResultSet rs = pst.executeQuery()) {
+             ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
                 User user = new User(rs.getInt("id"), rs.getString("username"), rs.getString("email"),
@@ -178,6 +173,20 @@ public class ChatDBManager {
             }
             preparedStatement.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void insertQueryFriendRequest(String query, String status, int senderID, int receiverID) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            // Set values for the parameters
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, senderID);
+            preparedStatement.setInt(3, receiverID);
+
+            // Execute the update
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

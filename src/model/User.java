@@ -38,8 +38,8 @@ public class User {
 
     @Override
     public String toString() {
-        return String.format("{\"email\":\"%s\", \"password\":\"%s\", \"username\":\"%s\"}",
-                email, password, username);
+        return String.format("{\"email\":\"%s\", \"password\":\"%s\", \"username\":\"%s\", \"id\":\"%s\"}",
+                email, password, username, id);
     }
 
 }
