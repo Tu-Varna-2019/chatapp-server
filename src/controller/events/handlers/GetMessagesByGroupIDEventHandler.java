@@ -27,11 +27,13 @@ public class GetMessagesByGroupIDEventHandler extends SharedDataEventHandler {
                                 // Add the current message to the JSON string
                                 messagesJSON.append(message.toString() + ",");
                         }
+
+                        // Remove the last comma from the JSON string
+                        messagesJSON.delete(messagesJSON.length() - 1, messagesJSON.length());
                 } catch (Exception e) {
                         logger.error("Error: {}", e.getMessage());
                 }
-                // Remove the last comma from the JSON string
-                messagesJSON.delete(messagesJSON.length() - 1, messagesJSON.length());
+
                 String status = dbRetrievedMessage == null ? "Failed" : "Success";
                 String message = dbRetrievedMessage == null ? "No messages found!"
                                 : "Messages found for the group id: " + groupid + " !";

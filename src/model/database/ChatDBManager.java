@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
@@ -69,7 +70,7 @@ public class ChatDBManager {
     }
 
     public List<User> getUsersQuery(String query) {
-        List<User> queryResultList = new ArrayList<User>();
+        List<User> queryResultList = new ArrayList<>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
@@ -85,11 +86,12 @@ public class ChatDBManager {
         } catch (SQLException ex) {
             logger.error(ex.getMessage());
         }
-        return null;
+        return Collections.emptyList();
+
     }
 
     public List<GroupChat> getGroupChatQuery(String query) {
-        List<GroupChat> queryResultList = new ArrayList<GroupChat>();
+        List<GroupChat> queryResultList = new ArrayList<>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
@@ -106,11 +108,11 @@ public class ChatDBManager {
         } catch (SQLException ex) {
             logger.info(ex.getMessage());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public List<FriendRequest> getFriendRequestQuery(String query) {
-        List<FriendRequest> queryResultList = new ArrayList<FriendRequest>();
+        List<FriendRequest> queryResultList = new ArrayList<>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
@@ -129,11 +131,11 @@ public class ChatDBManager {
         } catch (SQLException ex) {
             logger.info(ex.getMessage());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public List<Message> getMessagesQuery(String query) {
-        List<Message> queryResultList = new ArrayList<Message>();
+        List<Message> queryResultList = new ArrayList<>();
 
         try (PreparedStatement pst = connection.prepareStatement(query);
                 ResultSet rs = pst.executeQuery()) {
@@ -153,7 +155,7 @@ public class ChatDBManager {
         } catch (SQLException ex) {
             logger.info(ex.getMessage());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public boolean updateRecordQuery(String query) {

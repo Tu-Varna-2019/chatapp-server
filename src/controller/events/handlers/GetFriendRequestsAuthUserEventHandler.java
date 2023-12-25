@@ -15,7 +15,6 @@ public class GetFriendRequestsAuthUserEventHandler extends SharedDataEventHandle
                 // JSON string formatter for final result
                 StringBuilder friendRequestJSON = new StringBuilder();
                 List<FriendRequest> dbRetrievedFriendRequest = null;
-                logger.info("\nEmail: {}", email);
 
                 try {
                         List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
@@ -31,13 +30,12 @@ public class GetFriendRequestsAuthUserEventHandler extends SharedDataEventHandle
                         for (FriendRequest friendRequest : dbRetrievedFriendRequest) {
                                 friendRequestJSON.append(friendRequest.toString() + ",");
                         }
-                } catch (
 
-                Exception e) {
-                        System.out.println("Error: {}" + e.getMessage());
+                        // Remove the last comma from the JSON string
+                        friendRequestJSON.delete(friendRequestJSON.length() - 1, friendRequestJSON.length());
+                } catch (Exception e) {
+                        logger.error("Got FriendRequest Error: {}" + e.getMessage());
                 }
-                // Remove the last comma from the JSON string
-                friendRequestJSON.delete(friendRequestJSON.length() - 1, friendRequestJSON.length());
                 String status = dbRetrievedFriendRequest == null ? "Failed" : "Success";
                 String message = dbRetrievedFriendRequest == null ? "Empty friend request!"
                                 : "Found friend requests with the authenticated user!";

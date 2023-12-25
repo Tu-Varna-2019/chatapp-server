@@ -38,6 +38,14 @@ public class Message {
         return timestamp;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setAttachmentURL(String attachmentURL) {
+        this.attachmentURL = attachmentURL;
+    }
+
     @Override
     public String toString() {
         return String.format(
