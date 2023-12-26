@@ -1,14 +1,17 @@
 package controller.events.handlers;
 
 import java.sql.Timestamp;
+import java.util.Base64;
 import java.util.List;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import controller.events.SharedDataEventHandler;
 import controller.helpers.Helpers;
 import model.GroupChat;
 import model.Message;
 import model.User;
+import model.storage.S3Manager;
 import view.SocketConnection;
 
 public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
@@ -20,8 +23,17 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                 StringBuilder messagesJSON = new StringBuilder();
                 String groupChatID = payload.get("groupchatid");
 
+                String fileAttachment = payload.get("attachmentURL");
+                String fileName = UUID.randomUUID().toString() + ".png";
+
+                if (fileAttachment != null && !fileAttachment.isEmpty()) {
+                        byte[] imageBytes = Base64.getDecoder().decode(fileAttachment);
+                        // Save file to s3
+                        S3Manager.uploadFile(payload.get("email") + "/" + fileName, imageBytes);
+                }
+
                 Message receivedMessage = new Message(Integer.parseInt(payload.get("id")), payload.get("content"),
-                                payload.get("attachmentURL"), Timestamp.valueOf(payload.get("timestamp")),
+                                fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
                                 new User(0, payload.get("username"), payload.get("email"), ""));
                 logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(), groupChatID);
 
@@ -37,7 +49,7 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                                         dbSender.get(0).getId(), Integer.parseInt(groupChatID));
 
                         // Notify users from the group chat
-                        notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
+                        // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
 
                         List<Message> dbMessages = chatDBManager
                                         .getMessagesQuery(getRecord.getMessageEQGroupID(Integer.parseInt(groupChatID)));
@@ -103,4 +115,5 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                         logger.error("Error: {}", e.getMessage());
                 }
         }
+
 }

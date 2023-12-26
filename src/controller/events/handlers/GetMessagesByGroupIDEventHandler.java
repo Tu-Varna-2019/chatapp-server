@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
+import controller.helpers.MaskData;
 import model.Message;
 
 public class GetMessagesByGroupIDEventHandler extends SharedDataEventHandler {
@@ -24,6 +25,11 @@ public class GetMessagesByGroupIDEventHandler extends SharedDataEventHandler {
                         logger.info("Retrieved message: " + dbRetrievedMessage.get(0).toString());
 
                         for (Message message : dbRetrievedMessage) {
+
+                                String encodedAttachmentFile = MaskData.base64EncodeS3File(
+                                                message.getSender().getEmail() + "/" + message.getAttachmentURL());
+
+                                message.setAttachmentURL(encodedAttachmentFile);
                                 // Add the current message to the JSON string
                                 messagesJSON.append(message.toString() + ",");
                         }

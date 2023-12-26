@@ -52,10 +52,7 @@ public class SocketConnection {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
             String payload = reader.readLine();
-            if (payload == null) {
-                logger.error("Error, payload is null!");
-                return;
-            }
+
             JSONObject jsonPayload = new JSONObject(payload);
             logger.info("Received payload: {}", payload);
 
@@ -69,10 +66,11 @@ public class SocketConnection {
 
                 String response = eventHandler.handleEvent(decodedData);
 
-                if (eventType.equals("Login")) {
-                    logger.info("Client is now logged! Adding {} to sockets list!", decodedData.get("email"));
-                    sockets.put(decodedData.get("email"), clientSocket);
-                }
+                // if (eventType.equals("Login")) {
+                // logger.info("Client is now logged! Adding {} to sockets list!",
+                // decodedData.get("email"));
+                // sockets.put(decodedData.get("email"), clientSocket);
+                // }
 
                 logger.info("Response: {}", response);
                 writer.write(response);
