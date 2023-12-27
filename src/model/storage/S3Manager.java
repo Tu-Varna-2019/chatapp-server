@@ -23,6 +23,7 @@ public class S3Manager {
     private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
 
     private static AWSCredentials credentials = null;
+    private static AmazonS3 s3 = null;
 
     private static void getAWSCredentials() {
 
@@ -34,48 +35,54 @@ public class S3Manager {
         if (credentials == null) {
             try {
                 credentials = new ProfileCredentialsProvider().getCredentials();
+
+                /*
+                 * Amazon S3 client object initialization
+                 */
+                if (s3 == null)
+                    s3 = AmazonS3ClientBuilder.standard()
+                            .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                            .withRegion("eu-west-1")
+                            .build();
+
+                logger.info("Credentials loaded from the credential profiles file.");
+
             } catch (Exception e) {
                 throw new AmazonClientException(
                         "Cannot load the credentials from the credential profiles file. " +
                                 "Please make sure that your credentials file is at the correct " +
                                 "location (~/.aws/credentials), and is in valid format.",
                         e);
+
             }
         }
+
     }
 
-    public static void uploadFile(String key, byte[] fileBytes) {
-
+    public static boolean uploadFile(String key, byte[] fileBytes) {
+        logger.info("Uploading a new object to S3 from a file\n");
         getAWSCredentials();
         try {
-            AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                    .withRegion("eu-west-1")
-                    .build();
-
-            logger.info("Uploading a new object to S3 from a file\n");
-
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(fileBytes.length);
             s3.putObject(
                     new PutObjectRequest(BUCKET_NAME, key, new ByteArrayInputStream(fileBytes), metadata));
-        } catch (AmazonServiceException e) {
-            logger.error("AmazonServiceException: ", e);
-        }
 
+            logger.info("File uploaded successfully!");
+
+            return true;
+        } catch (AmazonServiceException e) {
+            logger.error(
+                    "Error uploading file from S3 Bucket!\n");
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public static S3Object getDownloadedFile(String key) {
-
+        logger.info("Downloading an object");
         getAWSCredentials();
         try {
-            AmazonS3 s3 = AmazonS3ClientBuilder.standard()
-                    .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                    .withRegion("eu-west-1")
-                    .build();
-
-            logger.info("Downloading an object");
-
             S3Object object = s3.getObject(new GetObjectRequest(BUCKET_NAME, key));
 
             logger.info("Content-Type: " + object.getObjectMetadata().getContentType());
@@ -83,9 +90,24 @@ public class S3Manager {
             return object;
 
         } catch (AmazonServiceException e) {
-            logger.error("AmazonServiceException: ", e);
-            return null;
+            logger.error(
+                    "Error downloading file from S3 Bucket!\n" + e.getMessage());
+            e.printStackTrace();
         }
+        return null;
+    }
 
+    public static void deleteFile(String key) {
+        logger.info("Deleting a file {} from S3\n", key);
+        getAWSCredentials();
+        try {
+            s3.deleteObject(BUCKET_NAME, key);
+            logger.info("File deleted!");
+
+        } catch (AmazonServiceException e) {
+            logger.error(
+                    "Error uploading file from S3 Bucket!\n");
+            e.printStackTrace();
+        }
     }
 }

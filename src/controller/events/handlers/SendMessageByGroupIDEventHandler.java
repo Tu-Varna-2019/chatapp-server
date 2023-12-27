@@ -19,18 +19,10 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
         @Override
         public String handleEvent(TreeMap<String, String> payload) {
 
-                // JSON string formatter for final result
-                StringBuilder messagesJSON = new StringBuilder();
                 String groupChatID = payload.get("groupchatid");
-
                 String fileAttachment = payload.get("attachmentURL");
-                String fileName = UUID.randomUUID().toString() + ".png";
 
-                if (fileAttachment != null && !fileAttachment.isEmpty()) {
-                        byte[] imageBytes = Base64.getDecoder().decode(fileAttachment);
-                        // Save file to s3
-                        S3Manager.uploadFile(payload.get("email") + "/" + fileName, imageBytes);
-                }
+                fileAttachment = uploadAttachmentFile(fileAttachment, payload.get("email"));
 
                 Message receivedMessage = new Message(Integer.parseInt(payload.get("id")), payload.get("content"),
                                 fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
@@ -51,17 +43,8 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                         // Notify users from the group chat
                         // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
 
-                        List<Message> dbMessages = chatDBManager
-                                        .getMessagesQuery(getRecord.getMessageEQGroupID(Integer.parseInt(groupChatID)));
+                        StringBuilder messagesJSON = getMessages(groupChatID);
 
-                        logger.info("Retrieved message: " + dbMessages.get(0).toString());
-
-                        for (Message message : dbMessages) {
-                                // Add the current message to the JSON string
-                                messagesJSON.append(message.toString() + ",");
-                        }
-                        // Remove the last comma from the JSON string
-                        messagesJSON.delete(messagesJSON.length() - 1, messagesJSON.length());
                         return (String.format(
                                         "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
                                         "Success", "Message inserted!", messagesJSON));
@@ -114,6 +97,21 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                 } catch (Exception e) {
                         logger.error("Error: {}", e.getMessage());
                 }
+        }
+
+        private String uploadAttachmentFile(String fileAttachment, String email) {
+                String fileName = "img_" + UUID.randomUUID().toString() + ".png";
+
+                if (fileAttachment != null && !fileAttachment.isEmpty()) {
+                        byte[] imageBytes = Base64.getDecoder().decode(fileAttachment);
+                        // Save file to s3
+                        boolean isUploadCompleted = S3Manager.uploadFile(email + "/" + fileName,
+                                        imageBytes);
+
+                        if (isUploadCompleted)
+                                return fileName;
+                }
+                return "";
         }
 
 }

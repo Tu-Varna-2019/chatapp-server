@@ -1,8 +1,11 @@
 package controller.events.handlers;
 
+import java.util.List;
 import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
+import model.Message;
+import model.storage.S3Manager;
 
 public class DeleteMessageByGroupIDEventHandler extends SharedDataEventHandler {
 
@@ -11,6 +14,13 @@ public class DeleteMessageByGroupIDEventHandler extends SharedDataEventHandler {
 
                 String messageID = payload.get("id");
                 try {
+
+                        List<Message> dbMessage = chatDBManager
+                                        .getMessagesQuery(getRecord.getMessageEQID(Integer.parseInt(messageID)));
+
+                        S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
+                                        + dbMessage.get(0).getAttachmentURL());
+
                         boolean isDeleted = chatDBManager
                                         .updateRecordQuery(
                                                         deleteRecord.DeleteMessageEQID(Integer.parseInt(messageID)));

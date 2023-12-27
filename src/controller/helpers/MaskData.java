@@ -53,14 +53,12 @@ public class MaskData {
     }
 
     public static String base64EncodeS3File(String key) {
-        S3Object object = S3Manager.getDownloadedFile(key);
-
         try {
+            S3Object object = S3Manager.getDownloadedFile(key);
             byte[] fileContent = IOUtils.toByteArray(object.getObjectContent());
             return Base64.getEncoder().encodeToString(fileContent);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
         }
-        return null;
+        return "";
     }
 }
