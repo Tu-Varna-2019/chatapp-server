@@ -1,6 +1,7 @@
 package controller.events.handlers;
 
 import java.util.List;
+import java.util.TreeMap;
 
 import controller.events.SharedDataEventHandler;
 import controller.helpers.Helpers;
@@ -10,9 +11,9 @@ import model.User;
 public class GetGroupChatsAuthUserEventHandler extends SharedDataEventHandler {
 
         @Override
-        public String handleEvent(String... args) {
+        public String handleEvent(TreeMap<String, String> payload) {
                 // args values: [email, password]
-                String email = args[0];
+                String email = payload.get("email");
                 // JSON string formatter for final result
                 StringBuilder groupChatsJSON = new StringBuilder();
                 List<GroupChat> dbRetrievedGroupChat = null;
@@ -25,7 +26,8 @@ public class GetGroupChatsAuthUserEventHandler extends SharedDataEventHandler {
 
                         // Get all group chats, that the authenticated user is currently in
                         dbRetrievedGroupChat = chatDBManager
-                                        .getGroupChatQuery(getRecord.getGroupChatEQID(dbRetrievedUser.get(0).getId()));
+                                        .getGroupChatQuery(
+                                                        getRecord.getGroupChatEQUserID(dbRetrievedUser.get(0).getId()));
 
                         for (GroupChat groupChat : dbRetrievedGroupChat) {
                                 // Get all users, that are in the current group chat
@@ -39,11 +41,12 @@ public class GetGroupChatsAuthUserEventHandler extends SharedDataEventHandler {
                                 // Add the current group chat to the JSON string
                                 groupChatsJSON.append(groupChat.toString() + ",");
                         }
+
+                        // Remove the last comma from the JSON string
+                        groupChatsJSON.delete(groupChatsJSON.length() - 1, groupChatsJSON.length());
                 } catch (Exception e) {
                         logger.error("Error: {}", e.getMessage());
                 }
-                // Remove the last comma from the JSON string
-                groupChatsJSON.delete(groupChatsJSON.length() - 1, groupChatsJSON.length());
                 String status = dbRetrievedGroupChat == null ? "Failed" : "Success";
                 String message = dbRetrievedGroupChat == null ? "Empty group chat!"
                                 : "Found group chat with the authenticated user!";

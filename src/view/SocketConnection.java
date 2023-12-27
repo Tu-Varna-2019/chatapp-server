@@ -4,9 +4,8 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 
@@ -19,25 +18,28 @@ public class SocketConnection {
     private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
     private final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
-    private final ExecutorService threadPool;
+    private final ConcurrentHashMap<String, Socket> sockets = new ConcurrentHashMap<>();
 
     public static SocketConnection getInstance() {
         if (instance == null) {
             instance = new SocketConnection();
         }
+
         return instance;
     }
 
     private SocketConnection() {
-        threadPool = Executors.newCachedThreadPool();
+    }
 
+    public void startServer() {
         try (ServerSocket serverSocket = new ServerSocket(PORT_NUMBER)) {
             logger.info("Server is listening on port {} ", PORT_NUMBER);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 logger.info("Client connected: {}", clientSocket.getInetAddress());
-                threadPool.submit(() -> handleClientRequest(clientSocket));
+                Thread thread = new Thread(() -> handleClientRequest(clientSocket));
+                thread.start();
             }
         } catch (IOException e) {
             logger.error("Server Socket Exception: ", e);
@@ -45,10 +47,12 @@ public class SocketConnection {
     }
 
     private void handleClientRequest(Socket clientSocket) {
+
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
             String payload = reader.readLine();
+
             JSONObject jsonPayload = new JSONObject(payload);
             logger.info("Received payload: {}", payload);
 
@@ -58,7 +62,17 @@ public class SocketConnection {
             EventHandler eventHandler = EventHandlerRegistry.getEventHandler(eventType);
 
             if (eventHandler != null) {
-                String response = eventHandler.handleEvent(MaskData.base64Decode(jsonPayload));
+                TreeMap<String, String> decodedData = MaskData.base64Decode(jsonPayload);
+
+                String response = eventHandler.handleEvent(decodedData);
+
+                // STILL ON TESTING for implementing the notification functionality
+                // if (eventType.equals("Login")) {
+                // logger.info("Client is now logged! Adding {} to sockets list!",
+                // decodedData.get("email"));
+                // sockets.put(decodedData.get("email"), clientSocket);
+                // }
+
                 logger.info("Response: {}", response);
                 writer.write(response);
                 writer.newLine();
@@ -67,8 +81,29 @@ public class SocketConnection {
                 logger.error("Error, unknown event: {}", eventType);
             }
 
+        } catch (
+
+        IOException e) {
+            logger.error("I/O Exception in client request handling: ", e);
+        }
+    }
+
+    public boolean sendEvent(String email, String response) {
+        try {
+            Socket socket = sockets.get(email);
+            if (socket != null && !socket.isClosed()) {
+                logger.info("Sending response to client: {}", response);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                writer.write(response);
+                writer.newLine();
+                writer.flush();
+
+                return true;
+            }
+            return false;
         } catch (IOException e) {
             logger.error("I/O Exception in client request handling: ", e);
+            return false;
         }
     }
 }

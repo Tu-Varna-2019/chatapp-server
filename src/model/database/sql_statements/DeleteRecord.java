@@ -7,4 +7,8 @@ public class DeleteRecord {
         return "DELETE FROM \"User\" WHERE id= " + id + ";";
     };
 
+    public final String DeleteMessageEQID(int id) {
+
+        return "DELETE FROM \"Message\" WHERE id= " + id + ";";
+    };
 }

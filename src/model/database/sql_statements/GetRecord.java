@@ -17,9 +17,24 @@ public class GetRecord {
         return "SELECT * FROM \"User\" WHERE id IN (" + userIds + ");";
     };
 
-    public final String getGroupChatEQID(int id) {
+    public final String getGroupChatEQUserID(int id) {
 
         return "SELECT * FROM \"GroupChat\" WHERE " + id + " = ANY(userids);";
+    };
+
+    public final String getGroupChatEQID(int id) {
+
+        return "SELECT * FROM \"GroupChat\" WHERE id= " + id + ";";
+    };
+
+    public final String getMessageEQGroupID(int id) {
+
+        return "SELECT * FROM \"Message\" WHERE groupchatid= " + id + " ;";
+    };
+
+    public final String getMessageEQID(int id) {
+
+        return "SELECT * FROM \"Message\" WHERE id= " + id + " ;";
     };
 
     public final String getFriendRequestEQSenderID(int id) {
