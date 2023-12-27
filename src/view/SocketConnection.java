@@ -66,6 +66,7 @@ public class SocketConnection {
 
                 String response = eventHandler.handleEvent(decodedData);
 
+                // STILL ON TESTING for implementing the notification functionality
                 // if (eventType.equals("Login")) {
                 // logger.info("Client is now logged! Adding {} to sockets list!",
                 // decodedData.get("email"));
