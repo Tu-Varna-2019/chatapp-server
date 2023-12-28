@@ -49,7 +49,7 @@ public class Message {
     @Override
     public String toString() {
         return String.format(
-                "{\"message\": {\"id\":\"%d\",\"content\":\"%s\",\"attachmentURL\":\"%s\",\"timestamp\":\"%s\", \"sender\":%s}}",
+                "{\"id\":\"%d\",\"content\":\"%s\",\"attachmentURL\":\"%s\",\"timestamp\":\"%s\", \"sender\":%s}",
                 id, content, attachmentURL, timestamp.toString(), sender.toString());
     }
 

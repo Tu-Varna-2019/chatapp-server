@@ -11,7 +11,6 @@ public class LoginEventHandler extends SharedDataEventHandler {
 
     @Override
     public String handleEvent(TreeMap<String, String> payload) {
-        // args values: [email, password]
         String email = payload.get("email");
         String password = payload.get("password");
         logger.info("\nEmail: {} \nPassword: {}", email, password);
@@ -25,12 +24,10 @@ public class LoginEventHandler extends SharedDataEventHandler {
 
         if (isPasswordCorrect)
             return String.format(
-                    "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"user\": {\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\"}}}",
+                    "{\"response\":{\"status\":\"%s\",\"message\":\"%s\",\"user\":%s}}",
                     status,
                     message,
-                    dbRetrievedUser.get(0).getUsername(),
-                    dbRetrievedUser.get(0).getEmail(),
-                    dbRetrievedUser.get(0).getPassword());
+                    dbRetrievedUser.get(0).toString());
 
         else
             return String.format(
