@@ -20,9 +20,9 @@ public class SendFriendRequestEventHandler extends SharedDataEventHandler {
         List<User> dbSenderAuthUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(emailSender));
         List<User> dbRecipientUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(emailRecipient));
 
-        if (!dbRecipientUser.isEmpty() || !dbSenderAuthUser.isEmpty()) {
-            try {
+        if (!dbRecipientUser.isEmpty()) {
 
+            try {
                 chatDBManager.insertQuery(insertStatement.INSERT_FRIEND_REQUEST, DEFAULT_STATUS,
                         dbSenderAuthUser.get(0).getId(), dbRecipientUser.get(0).getId());
 
@@ -33,7 +33,7 @@ public class SendFriendRequestEventHandler extends SharedDataEventHandler {
                 return "Error in SendFriendRequestEventHandler: {}" + e.getMessage();
             }
         } else {
-            return "{\"response\":{\"status\":\"Failed\",\"message\":\"Error: Email does not exist!\"}}";
+            return "{\"response\":{\"status\":\"Failed\",\"message\":\"Email does not exist!\"}}";
         }
     }
 }

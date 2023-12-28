@@ -18,6 +18,7 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("GetGroupChatsAuthUser", new GetGroupChatsAuthUserEventHandler());
         eventHandlerMap.put("GetFriendRequestsAuthUser", new GetFriendRequestsAuthUserEventHandler());
         eventHandlerMap.put("SendFriendRequest", new SendFriendRequestEventHandler());
+        eventHandlerMap.put("CreateGroupChat", new CreateGroupChatEventHandler());
         eventHandlerMap.put("DeleteAccount", new DeleteAccountEventHandler());
         eventHandlerMap.put("RenameUsername", new RenameUsernameEventHandler());
         eventHandlerMap.put("RenameEmail", new RenameEmailEventHandler());
