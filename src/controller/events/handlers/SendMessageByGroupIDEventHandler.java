@@ -46,7 +46,7 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                         StringBuilder messagesJSON = getMessages(groupChatID);
 
                         return (String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\",\"messages\":{\"messages\":[%s]}}}",
+                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
                                         "Success", "Message inserted!", messagesJSON));
 
                 } catch (Exception e) {
@@ -54,7 +54,7 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
                 }
 
                 return (String.format(
-                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":{\"messages\":[%s]}}}",
+                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
                                 "Failed", "Error retrieveing messages", ""));
         }
 

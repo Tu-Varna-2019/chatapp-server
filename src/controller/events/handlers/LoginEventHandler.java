@@ -13,11 +13,13 @@ public class LoginEventHandler extends SharedDataEventHandler {
     public String handleEvent(TreeMap<String, String> payload) {
         String email = payload.get("email");
         String password = payload.get("password");
+        boolean isPasswordCorrect = false;
         logger.info("\nEmail: {} \nPassword: {}", email, password);
 
         List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
 
-        boolean isPasswordCorrect = MaskData.checkHashedPassword(password, dbRetrievedUser.get(0).getPassword());
+        if (!dbRetrievedUser.isEmpty())
+            isPasswordCorrect = MaskData.checkHashedPassword(password, dbRetrievedUser.get(0).getPassword());
 
         String status = !isPasswordCorrect ? "Failed" : "Success";
         String message = !isPasswordCorrect ? "Incorrect email/password!" : "Successfully logged in!";
