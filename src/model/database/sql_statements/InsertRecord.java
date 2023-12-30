@@ -6,5 +6,7 @@ public class InsertRecord {
 
     public final String INSERT_MESSAGE = "INSERT INTO \"Message\"(content, attachmenturl, timestamp, senderid, groupchatid) VALUES (?, ?, ?, ?, ?)";
 
+    public final String INSERT_GROUPCHAT = "INSERT INTO \"GroupChat\"(name, userids) VALUES (?, ?)";
+
     public final String INSERT_FRIEND_REQUEST = "INSERT INTO \"FriendRequest\"(status, senderid, recipientid) VALUES (?, ?, ?)";
 }

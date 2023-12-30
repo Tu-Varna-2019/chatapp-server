@@ -10,7 +10,6 @@ public class RenameEmailEventHandler extends SharedDataEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {
-                // args values: [new-email, SKIP - password, old-email]
                 String newEmail = payload.get("email");
                 String oldEmail = payload.get("username");
                 logger.info("\nReceived old Email: {} \n New Email: {}", oldEmail, newEmail);

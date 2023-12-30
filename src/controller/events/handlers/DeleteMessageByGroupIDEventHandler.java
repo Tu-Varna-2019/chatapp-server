@@ -38,7 +38,7 @@ public class DeleteMessageByGroupIDEventHandler extends SharedDataEventHandler {
                 }
 
                 return (String.format(
-                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
-                                "Failed", "Error, please try again!", ""));
+                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"message\":\"%s\"}}",
+                                "Failed", "Error, please try again!"));
         }
 }

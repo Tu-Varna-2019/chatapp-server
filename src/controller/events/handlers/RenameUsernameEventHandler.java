@@ -10,7 +10,6 @@ public class RenameUsernameEventHandler extends SharedDataEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {
-                // args values: [email, SKIP - password,username]
                 String email = payload.get("email");
                 String username = payload.get("username");
                 logger.info("\nEmail: {}\n Username: {}", email, username);

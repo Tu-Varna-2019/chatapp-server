@@ -182,6 +182,10 @@ public class ChatDBManager {
                     preparedStatement.setTimestamp(index + 1, (Timestamp) columns[index]);
                 else if (columns[index] instanceof Integer)
                     preparedStatement.setInt(index + 1, (Integer) columns[index]);
+                else if (columns[index] instanceof Integer[]) {
+                    Array sqlArray = connection.createArrayOf("integer", (Object[]) columns[index]);
+                    preparedStatement.setArray(index + 1, sqlArray);
+                }
             }
             preparedStatement.executeUpdate();
 

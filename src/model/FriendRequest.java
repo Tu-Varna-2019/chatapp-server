@@ -22,7 +22,7 @@ public class FriendRequest {
 
     @Override
     public String toString() {
-        return String.format("{\"friendrequest\": {\"id\":\"%d\",\"status\":\"%s\", \"recipient\":%s}}",
+        return String.format("{\"id\":\"%d\",\"status\":\"%s\", \"recipient\":%s}",
                 id, status, recipient.toString());
     }
 

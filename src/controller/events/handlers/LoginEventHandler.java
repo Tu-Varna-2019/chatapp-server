@@ -11,26 +11,25 @@ public class LoginEventHandler extends SharedDataEventHandler {
 
     @Override
     public String handleEvent(TreeMap<String, String> payload) {
-        // args values: [email, password]
         String email = payload.get("email");
         String password = payload.get("password");
+        boolean isPasswordCorrect = false;
         logger.info("\nEmail: {} \nPassword: {}", email, password);
 
         List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
 
-        boolean isPasswordCorrect = MaskData.checkHashedPassword(password, dbRetrievedUser.get(0).getPassword());
+        if (!dbRetrievedUser.isEmpty())
+            isPasswordCorrect = MaskData.checkHashedPassword(password, dbRetrievedUser.get(0).getPassword());
 
         String status = !isPasswordCorrect ? "Failed" : "Success";
         String message = !isPasswordCorrect ? "Incorrect email/password!" : "Successfully logged in!";
 
         if (isPasswordCorrect)
             return String.format(
-                    "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"user\": {\"username\":\"%s\",\"email\":\"%s\",\"password\":\"%s\"}}}",
+                    "{\"response\":{\"status\":\"%s\",\"message\":\"%s\",\"user\":%s}}",
                     status,
                     message,
-                    dbRetrievedUser.get(0).getUsername(),
-                    dbRetrievedUser.get(0).getEmail(),
-                    dbRetrievedUser.get(0).getPassword());
+                    dbRetrievedUser.get(0).toString());
 
         else
             return String.format(
