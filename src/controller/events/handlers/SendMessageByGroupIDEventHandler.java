@@ -24,7 +24,7 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
 
                 fileAttachment = uploadAttachmentFile(fileAttachment, payload.get("email"));
 
-                Message receivedMessage = new Message(Integer.parseInt(payload.get("id")), payload.get("content"),
+                Message receivedMessage = new Message(0, payload.get("content"),
                                 fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
                                 new User(0, payload.get("username"), payload.get("email"), ""));
                 logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(), groupChatID);
