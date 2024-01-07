@@ -7,15 +7,6 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library>
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/postgresql-42.6.0.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="module-library">
       <library>
         <CLASSES />
@@ -28,10 +19,53 @@
     <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/json-20231013.jar!/" />
+          <root url="file://$MODULE_DIR$" />
         </CLASSES>
         <JAVADOC />
-        <SOURCES />
+        <SOURCES>
+          <root url="file://$MODULE_DIR$/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$USER_HOME$/Downloads/lib/ion-java-1.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/httpcore-4.4.13.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/log4j-api-2.22.0.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/commons-codec-1.15.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/log4j-core-2.22.0.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jackson-core-2.12.7.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/aws-swf-build-tools-1.1.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/aws-java-sdk-1.12.625.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jackson-databind-2.12.7.1.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/json-20230618.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/freemarker-2.3.9.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/aspectjrt-1.8.2.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jmespath-java-1.12.625.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jbcrypt.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/javax.mail-api-1.4.6.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-buffer-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/httpclient-4.5.13.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/commons-logging-1.1.3.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/joda-time-2.8.1.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jackson-dataformat-cbor-2.12.6.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/jackson-annotations-2.12.7.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-codec-http-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-codec-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-handler-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-common-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-resolver-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-transport-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/netty-transport-native-unix-common-4.1.100.Final.jar!/" />
+          <root url="jar://$USER_HOME$/Downloads/lib/postgresql-42.7.1.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="jar://$USER_HOME$/Downloads/lib/aws-java-sdk-1.12.625-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$USER_HOME$/Downloads/lib/aws-java-sdk-1.12.625-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>

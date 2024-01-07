@@ -37,11 +37,18 @@ public abstract class SharedDataEventHandler implements EventHandler {
 
             for (Message message : dbRetrievedMessage) {
 
-                String encodedAttachmentFile = MaskData.base64EncodeS3File(
-                        message.getSender().getEmail() + "/"
-                                + message.getAttachmentURL());
+                // Check if message has attachment
+                if (message.getAttachmentURL() == null || message.getAttachmentURL().isEmpty())
+                    message.setAttachmentURL("");
 
-                message.setAttachmentURL(encodedAttachmentFile);
+                // Encode the attachment file
+                else {
+                    String encodedAttachmentFile = MaskData.base64EncodeS3File(
+                            message.getSender().getEmail() + "/"
+                                    + message.getAttachmentURL());
+
+                    message.setAttachmentURL(encodedAttachmentFile);
+                }
                 // Add the current message to the JSON string
                 messagesJSON.append(message.toString() + ",");
             }

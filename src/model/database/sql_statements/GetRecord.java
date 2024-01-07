@@ -27,6 +27,11 @@ public class GetRecord {
         return "SELECT * FROM \"GroupChat\" WHERE id= " + id + ";";
     };
 
+    public final String getGroupChatEQName(String name) {
+
+        return "SELECT * FROM \"GroupChat\" WHERE name='" + name + "';";
+    };
+
     public final String getMessageEQGroupID(int id) {
 
         return "SELECT * FROM \"Message\" WHERE groupchatid= " + id + " ;";

@@ -38,7 +38,7 @@ public class GroupChat {
 
     @Override
     public String toString() {
-        return String.format("{\"groupchat\": {\"id\":%d, \"name\":\"%s\", \"users\":%s}}",
+        return String.format("{\"id\":%d, \"name\":\"%s\", \"users\":%s}",
                 id, name, Helpers.usersToJson(users));
     }
 
