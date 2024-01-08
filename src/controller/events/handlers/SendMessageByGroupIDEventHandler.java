@@ -24,42 +24,40 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
 
             fileAttachment = uploadAttachmentFile(fileAttachment, payload.get("email"));
 
-            if (payload.get("content").isEmpty()) {
-               logger.info("empty message inserted from client");
-            } else {
-                Message receivedMessage = new Message(0, payload.get("content"),
-                        fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
-                        new User(0, payload.get("username"), payload.get("email"), ""));
-                logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(), groupChatID);
 
-                try {
-                    List<User> dbSender = chatDBManager.getUsersQuery(
-                            getRecord.getUserEQEmail(receivedMessage.getSender().getEmail()));
+                if (!payload.get("content").isEmpty()) {
 
-                    logger.info("Retrieved sender: " + dbSender.get(0).toString());
+                    String status = "Success";
 
-                    // Insert message
-                    chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, receivedMessage.getContent(),
-                            receivedMessage.getAttachmentURL(), receivedMessage.getTimestamp(),
-                            dbSender.get(0).getId(), Integer.parseInt(groupChatID));
+                    Message receivedMessage = new Message(0, payload.get("content"),
+                            fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
+                            new User(0, payload.get("username"), payload.get("email"), ""));
+                    logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(), groupChatID);
 
-                    // Notify users from the group chat
-                    // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
+                    try {
+                        List<User> dbSender = chatDBManager.getUsersQuery(
+                                getRecord.getUserEQEmail(receivedMessage.getSender().getEmail()));
 
-                    StringBuilder messagesJSON = getMessages(groupChatID);
+                        logger.info("Retrieved sender: " + dbSender.get(0).toString());
 
-                    return (String.format(
-                            "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
-                            "Success", "Message inserted!", messagesJSON));
+                        // Insert message
+                        chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, receivedMessage.getContent(),
+                                receivedMessage.getAttachmentURL(), receivedMessage.getTimestamp(),
+                                dbSender.get(0).getId(), Integer.parseInt(groupChatID));
 
-                } catch (Exception e) {
-                    logger.error("Error: {}", e.getMessage());
+                        // Notify users from the group chat
+                        // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
+
+                        StringBuilder messagesJSON = getMessages(groupChatID);
+
+                        return (String.format(
+                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
+                                "Success", "Message inserted!", messagesJSON));
+
+                    } catch (Exception e) {
+                        logger.error("Error: {}", e.getMessage());
+                    }
                 }
-
-                return (String.format(
-                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
-                        "Failed", "Error retrieveing messages", ""));
-            }
             return (String.format(
                     "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
                     "Failed", "Error retrieveing messages", ""));
