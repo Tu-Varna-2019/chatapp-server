@@ -19,45 +19,53 @@ public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
         @Override
         public String handleEvent(TreeMap<String, String> payload) {
 
+                StringBuilder messagesJSON = new StringBuilder();
+                String status = "Failed";
+                String message = "Failed to send message. Please try again!";
+
                 String groupChatID = payload.get("groupchatid");
                 String fileAttachment = payload.get("attachmentURL");
 
                 fileAttachment = uploadAttachmentFile(fileAttachment, payload.get("email"));
 
-                Message receivedMessage = new Message(0, payload.get("content"),
-                                fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
-                                new User(0, payload.get("username"), payload.get("email"), ""));
-                logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(), groupChatID);
+                // Check if the message content is not empty
+                if (!payload.get("content").isEmpty()) {
 
-                try {
-                        List<User> dbSender = chatDBManager.getUsersQuery(
-                                        getRecord.getUserEQEmail(receivedMessage.getSender().getEmail()));
+                        Message receivedMessage = new Message(0, payload.get("content"),
+                                        fileAttachment, Timestamp.valueOf(payload.get("timestamp")),
+                                        new User(0, payload.get("username"), payload.get("email"), ""));
+                        logger.info("\nReceived message: {} \n GroupChat ID: {}", receivedMessage.toString(),
+                                        groupChatID);
 
-                        logger.info("Retrieved sender: " + dbSender.get(0).toString());
+                        try {
+                                List<User> dbSender = chatDBManager.getUsersQuery(
+                                                getRecord.getUserEQEmail(receivedMessage.getSender().getEmail()));
 
-                        // Insert message
-                        chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, receivedMessage.getContent(),
-                                        receivedMessage.getAttachmentURL(), receivedMessage.getTimestamp(),
-                                        dbSender.get(0).getId(), Integer.parseInt(groupChatID));
+                                logger.info("Retrieved sender: " + dbSender.get(0).toString());
 
-                        // Notify users from the group chat
-                        // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
+                                // Insert message
+                                chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, receivedMessage.getContent(),
+                                                receivedMessage.getAttachmentURL(), receivedMessage.getTimestamp(),
+                                                dbSender.get(0).getId(), Integer.parseInt(groupChatID));
 
-                        StringBuilder messagesJSON = getMessages(groupChatID);
+                                // Notify users from the group chat
+                                // notifyUsers(groupChatID, receivedMessage, dbSender.get(0).getId());
 
-                        return (String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
-                                        "Success", "Message inserted!", messagesJSON));
+                                messagesJSON = getMessages(groupChatID);
+                                status = "Success";
+                                message = "Message inserted!";
 
-                } catch (Exception e) {
-                        logger.error("Error: {}", e.getMessage());
+                        } catch (Exception e) {
+                                logger.error("Error: {}", e.getMessage());
+                        }
                 }
 
                 return (String.format(
                                 "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"messages\":[%s]}}",
-                                "Failed", "Error retrieveing messages", ""));
+                                status, message, messagesJSON));
         }
 
+        // TODO: Use this when notification is implemented
         private void notifyUsers(String groupChatID, Message message, Integer senderID) {
                 try {
                         logger.info("Notifying users for group chat: {}", groupChatID);
