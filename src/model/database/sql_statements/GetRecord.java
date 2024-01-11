@@ -42,8 +42,24 @@ public class GetRecord {
         return "SELECT * FROM \"Message\" WHERE id= " + id + " ;";
     };
 
+
+//
     public final String getFriendRequestEQSenderID(int id) {
 
         return "SELECT * FROM \"FriendRequest\" WHERE senderid= " + id + " ;";
     };
+//
+    public final String getFriendRequestPendingEQSenderID(int id) {
+
+        return "SELECT * FROM \"FriendRequest\" WHERE senderid= " + id + " AND status='Pending' ;";
+    };
+
+    public final String getIncomingFriendRequests(int id) {
+
+        return "SELECT * FROM \"FriendRequest\" WHERE recipientid= " + id + " AND status='Pending' ;";
+    };
+
+    public final String getFriendRequestAcceptedEQSenderID(int id) {
+        return "SELECT * FROM \"FriendRequest\" WHERE senderid=" + id + " AND status='Accepted';";
+    }
 };
