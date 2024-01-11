@@ -26,6 +26,8 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("GetMessagesByGroupID", new GetMessagesByGroupIDEventHandler());
         eventHandlerMap.put("SendMessageByGroupID", new SendMessageByGroupIDEventHandler());
         eventHandlerMap.put("deleteMessageByGroupID", new DeleteMessageByGroupIDEventHandler());
+        eventHandlerMap.put("GetIncomingFriendRequests", new GetIncomingFriendRequestsEventHandler());
+        eventHandlerMap.put("GetFriendsAuthUser", new GetFriendsAuthUserEventHandler());
     }
 
     /*

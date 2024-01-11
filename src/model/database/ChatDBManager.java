@@ -118,12 +118,14 @@ public class ChatDBManager {
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
-                Integer userIdsArray = rs.getInt("recipientid");
+                Integer recipientIdsArray = rs.getInt("recipientid");
+                Integer senderIdsArray = rs.getInt("senderid");
 
-                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID(userIdsArray));
+                List<User> dbSender = getUsersQuery(getRecord.getUserEQID(senderIdsArray));
+                List<User> dbRecipient = getUsersQuery(getRecord.getUserEQID(recipientIdsArray));
 
                 FriendRequest friendRequest = new FriendRequest(rs.getInt("id"), rs.getString("status"),
-                        dbRetrievedUser.get(0));
+                        dbRecipient.get(0), dbSender.get(0));
 
                 queryResultList.add(friendRequest);
             }
