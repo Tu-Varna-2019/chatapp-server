@@ -1,4 +1,4 @@
-package controller.events.handlers;
+package controller.events.handlers.message;
 
 import java.sql.Timestamp;
 import java.util.Base64;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 import java.util.UUID;
 
-import controller.events.SharedDataEventHandler;
+import controller.events.handlers.shared.SharedEventHandler;
 import controller.helpers.Helpers;
 import model.GroupChat;
 import model.Message;
@@ -14,7 +14,7 @@ import model.User;
 import model.storage.S3Manager;
 import view.SocketConnection;
 
-public class SendMessageByGroupIDEventHandler extends SharedDataEventHandler {
+public class SendMessageEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {

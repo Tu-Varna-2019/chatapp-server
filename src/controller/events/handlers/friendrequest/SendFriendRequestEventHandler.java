@@ -1,11 +1,12 @@
-package controller.events.handlers;
+package controller.events.handlers.friendrequest;
 
-import controller.events.SharedDataEventHandler;
 import model.User;
 import java.util.List;
 import java.util.TreeMap;
 
-public class SendFriendRequestEventHandler extends SharedDataEventHandler {
+import controller.events.handlers.shared.SharedEventHandler;
+
+public class SendFriendRequestEventHandler extends SharedEventHandler {
 
     private final String DEFAULT_STATUS = "Pending";
 

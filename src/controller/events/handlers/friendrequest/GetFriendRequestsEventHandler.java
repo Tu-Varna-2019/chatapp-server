@@ -1,13 +1,13 @@
-package controller.events.handlers;
+package controller.events.handlers.friendrequest;
 
 import java.util.List;
 import java.util.TreeMap;
 
-import controller.events.SharedDataEventHandler;
+import controller.events.handlers.shared.SharedEventHandler;
 import model.FriendRequest;
 import model.User;
 
-public class GetFriendRequestsAuthUserEventHandler extends SharedDataEventHandler {
+public class GetFriendRequestsEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {

@@ -1,13 +1,13 @@
-package controller.events.handlers;
+package controller.events.handlers.message;
 
 import java.util.List;
 import java.util.TreeMap;
 
-import controller.events.SharedDataEventHandler;
+import controller.events.handlers.shared.SharedEventHandler;
 import model.Message;
 import model.storage.S3Manager;
 
-public class DeleteMessageByGroupIDEventHandler extends SharedDataEventHandler {
+public class DeleteMessageEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {

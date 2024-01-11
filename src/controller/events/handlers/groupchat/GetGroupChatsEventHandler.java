@@ -1,14 +1,14 @@
-package controller.events.handlers;
+package controller.events.handlers.groupchat;
 
 import java.util.List;
 import java.util.TreeMap;
 
-import controller.events.SharedDataEventHandler;
+import controller.events.handlers.shared.SharedEventHandler;
 import controller.helpers.Helpers;
 import model.GroupChat;
 import model.User;
 
-public class GetGroupChatsAuthUserEventHandler extends SharedDataEventHandler {
+public class GetGroupChatsEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {

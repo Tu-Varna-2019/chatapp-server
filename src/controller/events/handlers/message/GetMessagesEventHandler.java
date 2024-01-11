@@ -1,10 +1,10 @@
-package controller.events.handlers;
+package controller.events.handlers.message;
 
 import java.util.TreeMap;
 
-import controller.events.SharedDataEventHandler;
+import controller.events.handlers.shared.SharedEventHandler;
 
-public class GetMessagesByGroupIDEventHandler extends SharedDataEventHandler {
+public class GetMessagesEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(TreeMap<String, String> payload) {

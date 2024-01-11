@@ -1,7 +1,8 @@
-package controller.events;
+package controller.events.handlers.shared;
 
 import org.apache.logging.log4j.Logger;
 
+import controller.events.EventHandler;
 import controller.helpers.MaskData;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import model.database.sql_statements.InsertRecord;
 import model.database.sql_statements.UpdateRecord;
 import view.SocketConnection;
 
-public abstract class SharedDataEventHandler implements EventHandler {
+public abstract class SharedEventHandler implements EventHandler {
 
     protected static final Logger logger = LogManager
             .getLogger(SocketConnection.class.getName());

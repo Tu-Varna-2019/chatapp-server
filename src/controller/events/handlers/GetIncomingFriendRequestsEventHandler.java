@@ -1,13 +1,14 @@
 package controller.events.handlers;
 
-import controller.events.SharedDataEventHandler;
 import model.FriendRequest;
 import model.User;
 
 import java.util.List;
 import java.util.TreeMap;
 
-public class GetIncomingFriendRequestsEventHandler extends SharedDataEventHandler {
+import controller.events.handlers.shared.SharedEventHandler;
+
+public class GetIncomingFriendRequestsEventHandler extends SharedEventHandler {
     @Override
     public String handleEvent(TreeMap<String, String> payload) {
         String email = payload.get("email");
