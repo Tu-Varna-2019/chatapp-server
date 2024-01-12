@@ -1,17 +1,25 @@
 package view;
 
-import org.json.JSONObject;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
-import org.apache.logging.log4j.Logger;
+
 import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import controller.events.EventHandler;
 import controller.events.EventHandlerRegistry;
-import controller.helpers.MaskData;
+import model.dataclass.ClientResponse;
 
 public class SocketConnection {
 
@@ -51,20 +59,23 @@ public class SocketConnection {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
-            String payload = reader.readLine();
+            String stringPayload = reader.readLine();
 
-            JSONObject jsonPayload = new JSONObject(payload);
-            logger.info("Received payload: {}", payload);
+            JSONObject jsonPayload = new JSONObject(stringPayload);
+            logger.info("Received payload: {}", stringPayload);
 
-            String eventType = MaskData.base64DecodeSelectedValue(jsonPayload.getString("eventType"));
-            logger.info("Event type received: {}", eventType);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setSerializationInclusion(Include.NON_NULL);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            ClientResponse payload = mapper.readValue(jsonPayload.toString(), ClientResponse.class);
 
-            EventHandler eventHandler = EventHandlerRegistry.getEventHandler(eventType);
+            logger.info("Event type received: {}", payload.eventType);
+
+            EventHandler eventHandler = EventHandlerRegistry.getEventHandler(payload.eventType);
 
             if (eventHandler != null) {
-                TreeMap<String, String> decodedData = MaskData.base64Decode(jsonPayload);
 
-                String response = eventHandler.handleEvent(decodedData);
+                String response = eventHandler.handleEvent(payload);
 
                 // STILL ON TESTING for implementing the notification functionality
                 // if (eventType.equals("Login")) {
@@ -78,7 +89,7 @@ public class SocketConnection {
                 writer.newLine();
                 writer.flush();
             } else {
-                logger.error("Error, unknown event: {}", eventType);
+                logger.error("Error, unknown event: {}", payload.eventType);
             }
 
         } catch (

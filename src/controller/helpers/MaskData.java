@@ -11,25 +11,32 @@ import com.amazonaws.util.IOUtils;
 import model.storage.S3Manager;
 
 public class MaskData {
-    // Return a string map of decoded payload and return them
-    public static TreeMap<String, String> base64Decode(JSONObject jsonPayload) {
+    public static TreeMap<String, Object> base64Decode(JSONObject jsonPayload) {
         JSONObject dataObject = jsonPayload.getJSONObject("data");
-        TreeMap<String, String> sortedMap = new TreeMap<>();
-        decode(dataObject, sortedMap);
+
+        TreeMap<String, Object> sortedMap = new TreeMap<>();
+        sortedMap.put("data", decode(dataObject));
+
+        if (jsonPayload.has("filter")) {
+            JSONObject filterObject = jsonPayload.getJSONObject("filter");
+            sortedMap.put("filter", decode(filterObject));
+        }
+
         return sortedMap;
     }
 
-    private static void decode(Object obj, TreeMap<String, String> sortedMap) {
+    private static Object decode(Object obj) {
         if (obj instanceof JSONObject) {
             JSONObject dataObject = (JSONObject) obj;
+            TreeMap<String, Object> sortedMap = new TreeMap<>();
             for (String key : dataObject.keySet()) {
                 Object value = dataObject.get(key);
                 if (value instanceof JSONObject || value instanceof JSONArray) {
-                    decode(value, sortedMap);
+                    sortedMap.put(key, decode(value));
                 } else if (value instanceof String) {
                     // Skip decoding if the key is 'attachmentURL'
                     if ("attachmentURL".equals(key)) {
-                        sortedMap.put(key, (String) value);
+                        sortedMap.put(key, value);
                         continue;
                     }
 
@@ -38,15 +45,19 @@ public class MaskData {
                     sortedMap.put(key, new String(decodedBytes));
                 }
             }
+            return sortedMap;
         } else if (obj instanceof JSONArray) {
             JSONArray array = (JSONArray) obj;
+            JSONArray decodedArray = new JSONArray();
             for (int i = 0; i < array.length(); i++) {
                 Object value = array.get(i);
                 if (value instanceof JSONObject || value instanceof JSONArray) {
-                    decode(value, sortedMap);
+                    decodedArray.put(decode(value));
                 }
             }
+            return decodedArray;
         }
+        return obj;
     }
 
     public static String base64DecodeSelectedValue(String encodedValue) {

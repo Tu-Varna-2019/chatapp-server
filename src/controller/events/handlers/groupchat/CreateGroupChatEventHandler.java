@@ -1,22 +1,25 @@
 package controller.events.handlers.groupchat;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.GroupChat;
 import model.User;
+import model.dataclass.ClientResponse;
 
 public class CreateGroupChatEventHandler extends SharedEventHandler {
 
     @Override
-    public String handleEvent(TreeMap<String, String> payload) {
+    public String handleEvent(ClientResponse payload) {
+
+        List<User> users = payload.data.groupchat.getUsers();
+        String groupchatName = payload.data.groupchat.getName();
+
+        String email = users.get(0).getEmail();
 
         String status = "Failed";
         String message = " already exists!";
 
-        String groupchatName = payload.get("name");
-        String email = payload.get("email");
         logger.info("Creating new group chat with name: {}\n from user: {}", groupchatName, email);
 
         try {

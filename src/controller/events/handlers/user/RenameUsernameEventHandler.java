@@ -1,17 +1,18 @@
 package controller.events.handlers.user;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.User;
+import model.dataclass.ClientResponse;
 
 public class RenameUsernameEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(TreeMap<String, String> payload) {
-                String email = payload.get("email");
-                String username = payload.get("username");
+        public String handleEvent(ClientResponse payload) {
+
+                String email = payload.data.user.getEmail();
+                String username = payload.data.user.getUsername();
                 logger.info("\nEmail: {}\n Username: {}", email, username);
 
                 List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));

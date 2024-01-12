@@ -1,17 +1,18 @@
 package controller.events.handlers.friendrequest;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.FriendRequest;
 import model.User;
+import model.dataclass.ClientResponse;
 
 public class GetFriendRequestsEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(TreeMap<String, String> payload) {
-                String email = payload.get("email");
+        public String handleEvent(ClientResponse payload) {
+
+                String email = payload.data.user.getEmail();
                 // JSON string formatter for final result
                 StringBuilder friendRequestJSON = new StringBuilder();
                 List<FriendRequest> dbRetrievedFriendRequest = null;

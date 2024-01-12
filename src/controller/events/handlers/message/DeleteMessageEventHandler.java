@@ -1,18 +1,18 @@
 package controller.events.handlers.message;
 
 import java.util.List;
-import java.util.TreeMap;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.Message;
+import model.dataclass.ClientResponse;
 import model.storage.S3Manager;
 
 public class DeleteMessageEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(TreeMap<String, String> payload) {
+        public String handleEvent(ClientResponse payload) {
 
-                String messageID = payload.get("id");
+                String messageID = payload.data.id;
                 try {
 
                         List<Message> dbMessage = chatDBManager

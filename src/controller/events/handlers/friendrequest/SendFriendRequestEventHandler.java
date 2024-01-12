@@ -1,20 +1,20 @@
 package controller.events.handlers.friendrequest;
 
-import model.User;
 import java.util.List;
-import java.util.TreeMap;
 
 import controller.events.handlers.shared.SharedEventHandler;
+import model.User;
+import model.dataclass.ClientResponse;
 
 public class SendFriendRequestEventHandler extends SharedEventHandler {
 
     private final String DEFAULT_STATUS = "Pending";
 
     @Override
-    public String handleEvent(TreeMap<String, String> payload) {
+    public String handleEvent(ClientResponse payload) {
 
-        String emailSender = payload.get("emailSender");
-        String emailRecipient = payload.get("emailRecipient");
+        String emailSender = payload.data.emailSender;
+        String emailRecipient = payload.data.emailRecipient;
 
         logger.info("Sender email: {}\n Recipient email: {}\n", emailSender, emailRecipient);
 

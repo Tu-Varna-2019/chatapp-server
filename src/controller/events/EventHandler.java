@@ -1,8 +1,8 @@
 package controller.events;
 
-import java.util.TreeMap;
+import model.dataclass.ClientResponse;
 
 public interface EventHandler {
-    public String handleEvent(TreeMap<String, String> payload);
+    public String handleEvent(ClientResponse payload);
 
 }

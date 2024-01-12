@@ -34,6 +34,10 @@ public abstract class SharedEventHandler implements EventHandler {
             List<Message> dbRetrievedMessage = chatDBManager
                     .getMessagesQuery(getRecord.getMessageEQGroupID(Integer.parseInt(groupChatID)));
 
+            // Check if the message list is empty
+            if (dbRetrievedMessage.isEmpty())
+                return messagesJSON;
+
             logger.info("Retrieved message: " + dbRetrievedMessage.get(0).toString());
 
             for (Message message : dbRetrievedMessage) {
@@ -57,7 +61,7 @@ public abstract class SharedEventHandler implements EventHandler {
             messagesJSON.delete(messagesJSON.length() - 1, messagesJSON.length());
 
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage());
+            logger.error("getMessages Error: {}", e.getMessage());
         }
         return messagesJSON;
     }
