@@ -12,21 +12,24 @@ public class SignUpEventHandler extends SharedEventHandler {
     @Override
     public String handleEvent(ClientRequest payload) {
 
+        message = "Error registering user. Please try again!";
+
         String email = payload.data.user.getEmail();
         String password = MaskData.hashPassword(payload.data.user.getPassword());
         String username = payload.data.user.getUsername();
 
-        logger.info("UserName: {} \nEmail: {} \nPassword: {}", username, email, password);
+        List<User> dbCheckExistingEmail = sharedUser.getUserIDByEmail(email);
 
-        List<User> dbCheckExistingEmail = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
+        if (!dbCheckExistingEmail.isEmpty()) {
+            message = "Email already exists!";
+        } else {
+            // If email does not exist, insert user
+            sharedUser.insertUser(username, email, password);
+            status = "Success";
+            message = "User registered";
+        }
 
-        if (!dbCheckExistingEmail.isEmpty())
-            return "{\"response\":{\"status\":\"Failed\",\"message\":\"Email already exists\"}}";
-
-        // If email does not exist, insert user
-        chatDBManager.insertQuery(insertStatement.INSERT_USER, username, email, password);
-
-        return "{\"response\":{\"status\":\"Success\",\"message\":\"User registered\"}}";
+        return sendPayloadToClient();
 
     }
 }

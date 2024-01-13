@@ -11,33 +11,29 @@ public class DeleteAccountEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(ClientRequest payload) {
+                message = "Error deleting account. Please try again!";
 
                 String email = payload.data.user.getEmail();
                 String password = payload.data.user.getPassword();
 
-                logger.info("\nEmail: {} \nPassword: {}", email, password);
-
-                List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
+                List<User> dbRetrievedUser = sharedUser.getUserIDByEmail(email);
 
                 boolean isPasswordCorrect = MaskData.checkHashedPassword(password,
                                 dbRetrievedUser.get(0).getPassword());
 
                 if (isPasswordCorrect) {
 
-                        boolean isDeleted = chatDBManager
-                                        .updateRecordQuery(deleteRecord.DeleteUserEQID(dbRetrievedUser.get(0).getId()));
+                        boolean isDeleted = sharedUser.deleteUserEQID(dbRetrievedUser.get(0).getId());
 
-                        String status = !isDeleted ? "Failed" : "Success";
-                        String message = !isDeleted ? "Incorrect email/password!" : "Successfully logged in!";
+                        if (isDeleted) {
+                                // Password updated successfully
+                                status = "Success";
+                                message = "Successfully deleted account! We will log you out now";
+                        }
 
-                        return String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                                        status,
-                                        message);
                 } else
-                        return String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                                        "Failed",
-                                        "Incorrect password!");
+                        message = "Incorrect password!";
+
+                return sendPayloadToClient();
         }
 }

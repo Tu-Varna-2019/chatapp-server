@@ -57,11 +57,4 @@ public class Message {
         this.attachmentURL = attachmentURL;
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "{\"id\":\"%d\",\"content\":\"%s\",\"attachmentURL\":\"%s\",\"timestamp\":\"%s\", \"sender\":%s}",
-                id, content, attachmentURL, timestamp.toString(), sender.toString());
-    }
-
 }

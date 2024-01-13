@@ -3,7 +3,6 @@ package controller.events;
 import java.util.HashMap;
 import java.util.Map;
 
-import controller.events.handlers.*;
 import controller.events.handlers.friendrequest.GetFriendRequestsEventHandler;
 import controller.events.handlers.friendrequest.SendFriendRequestEventHandler;
 import controller.events.handlers.groupchat.CreateGroupChatEventHandler;
@@ -42,8 +41,6 @@ public class EventHandlerRegistry {
         // Friend requests
         eventHandlerMap.put("GetFriendRequests", new GetFriendRequestsEventHandler());
         eventHandlerMap.put("SendFriendRequest", new SendFriendRequestEventHandler());
-        eventHandlerMap.put("GetIncomingFriendRequests", new GetIncomingFriendRequestsEventHandler());
-        eventHandlerMap.put("GetFriendsAuthUser", new GetFriendsAuthUserEventHandler());
 
         // Messages
         eventHandlerMap.put("GetMessages", new GetMessagesEventHandler());

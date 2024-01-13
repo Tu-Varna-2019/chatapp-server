@@ -11,38 +11,31 @@ public class GetFriendRequestsEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(ClientRequest payload) {
+                message = "Friend requests not found!";
 
                 String email = payload.data.user.getEmail();
-                // JSON string formatter for final result
-                StringBuilder friendRequestJSON = new StringBuilder();
-                List<FriendRequest> dbRetrievedFriendRequest = null;
 
-                try {
-                        List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
+                if (!email.isEmpty()) {
 
-                        logger.info("Retrieved user: " + dbRetrievedUser.get(0).toString());
+                        List<User> dbUser = sharedUser.getUserIDByEmail(email);
+                        // Get all friend requests, that the authenticated user is currently in
+                        List<FriendRequest> dbFriendRequest;
+                        // nested if statements to check if the filter is null, and the || operator
+                        // won't be evaluated, for throwing a NullPointerException
+                        if (payload.filter == null || (payload.filter != null && payload.filter.friendrequest == null))
+                                dbFriendRequest = sharedFriendRequest
+                                                .getFriendRequestEQSenderID(dbUser.get(0).getId());
+                        else
+                                dbFriendRequest = sharedFriendRequest.getFriendRequestEQSenderID(
+                                                dbUser.get(0).getId(), payload.filter.friendrequest);
 
-                        // Get all group chats, that the authenticated user is currently in
-                        dbRetrievedFriendRequest = chatDBManager
-                                        .getFriendRequestQuery(
-                                                        getRecord.getFriendRequestEQSenderID(
-                                                                        dbRetrievedUser.get(0).getId()));
-
-                        for (FriendRequest friendRequest : dbRetrievedFriendRequest) {
-                                friendRequestJSON.append(friendRequest.toString() + ",");
+                        if (!dbFriendRequest.isEmpty()) {
+                                status = "Success";
+                                message = "Friend request found!";
+                                dataResponse.friendrequests = dbFriendRequest;
                         }
-
-                        // Remove the last comma from the JSON string
-                        friendRequestJSON.delete(friendRequestJSON.length() - 1, friendRequestJSON.length());
-                } catch (Exception e) {
-                        logger.error("Got FriendRequest Error: {}" + e.getMessage());
                 }
-                String status = dbRetrievedFriendRequest == null ? "Failed" : "Success";
-                String message = dbRetrievedFriendRequest == null ? "Empty friend request!"
-                                : "Found friend requests with the authenticated user!";
 
-                return (String.format(
-                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"friendrequests\":[%s]}}",
-                                status, message, friendRequestJSON));
+                return sendPayloadToClient();
         }
 }

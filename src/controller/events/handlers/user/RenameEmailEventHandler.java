@@ -2,44 +2,48 @@ package controller.events.handlers.user;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import controller.events.handlers.shared.SharedEventHandler;
 import model.User;
 import model.dataclass.ClientRequest;
+import view.SocketConnection;
 
 public class RenameEmailEventHandler extends SharedEventHandler {
 
+        private static final Logger logger = LogManager
+                        .getLogger(SocketConnection.class.getName());
+
         @Override
         public String handleEvent(ClientRequest payload) {
+                message = "Failed to update email. Please try again!";
 
                 String newEmail = payload.data.user.getEmail();
                 String oldEmail = payload.data.user.getUsername();
-                logger.info("\nReceived old Email: {} \n New Email: {}", oldEmail, newEmail);
 
-                List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(oldEmail));
+                List<User> dbRetrievedUser = sharedUser.getUserIDByEmail(oldEmail);
 
-                List<User> dbCheckUserEQEmail = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(newEmail));
+                List<User> dbCheckUserEQEmail = sharedUser.getUserIDByEmail(newEmail);
 
                 // Check if email already exists
-                if (!dbCheckUserEQEmail.isEmpty())
-                        return "{\"response\":{\"status\":\"Failed\",\"message\":\"Email already exists\"}}";
+                if (!dbCheckUserEQEmail.isEmpty()) {
+                        message = "Email already exists!";
+                } else {
 
-                logger.info("Now changing {} -> {}" + dbRetrievedUser.get(0).getEmail(), newEmail);
+                        logger.info("Now changing {} -> {}" + dbRetrievedUser.get(0).getEmail(), newEmail);
 
-                if (!dbRetrievedUser.isEmpty()) {
-                        boolean isEmailUpdated = chatDBManager
-                                        .updateRecordQuery(updateRecord.UpdateEmailEQID(
-                                                        newEmail,
-                                                        dbRetrievedUser.get(0).getId()));
+                        if (!dbRetrievedUser.isEmpty()) {
+                                boolean isEmailUpdated = sharedUser.updateEmailEQID(newEmail,
+                                                dbRetrievedUser.get(0).getId());
 
-                        String status = !isEmailUpdated ? "Failed" : "Success";
-                        String message = !isEmailUpdated ? "Failed to update email. Please try again!"
-                                        : "Successfully updated email!";
-
-                        return String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                                        status,
-                                        message);
-                } else
-                        return "{\"response\":{\"status\":\"Failed\",\"message\":\"Email not found, sorry for the inconvenience! \"}}";
+                                if (isEmailUpdated) {
+                                        // Email updated successfully
+                                        status = "Success";
+                                        message = "Successfully updated email!";
+                                }
+                        }
+                }
+                return sendPayloadToClient();
         }
 }

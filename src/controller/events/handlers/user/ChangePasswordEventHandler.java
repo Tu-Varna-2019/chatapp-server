@@ -2,25 +2,31 @@ package controller.events.handlers.user;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import controller.events.handlers.shared.SharedEventHandler;
 import controller.helpers.MaskData;
 import model.User;
 import model.dataclass.ClientRequest;
+import view.SocketConnection;
 
 public class ChangePasswordEventHandler extends SharedEventHandler {
+        private static final Logger logger = LogManager
+                        .getLogger(SocketConnection.class.getName());
 
         @Override
         public String handleEvent(ClientRequest payload) {
+                message = "Failed to update password. Please try again!";
 
                 String email = payload.data.user.getEmail();
                 String oldPassword = payload.data.user.getPassword();
                 String newPassword = payload.data.user.getUsername();
-                logger.info("\nReceived old Password: {} \n New Password: {}", oldPassword, newPassword);
 
-                List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
+                List<User> dbUser = sharedUser.getUserIDByEmail(email);
 
                 boolean isPasswordCorrect = MaskData.checkHashedPassword(oldPassword,
-                                dbRetrievedUser.get(0).getPassword());
+                                dbUser.get(0).getPassword());
 
                 // Check if Password is correct
                 if (isPasswordCorrect) {
@@ -29,20 +35,18 @@ public class ChangePasswordEventHandler extends SharedEventHandler {
 
                         String hashedPassword = MaskData.hashPassword(newPassword);
 
-                        boolean isPasswordUpdated = chatDBManager
-                                        .updateRecordQuery(updateRecord.UpdatePasswordEQID(
-                                                        hashedPassword,
-                                                        dbRetrievedUser.get(0).getId()));
+                        boolean isPasswordUpdated = sharedUser.updatePasswordEQID(hashedPassword,
+                                        dbUser.get(0).getId());
 
-                        String status = !isPasswordUpdated ? "Failed" : "Success";
-                        String message = !isPasswordUpdated ? "Failed to update password. Please try again!"
-                                        : "Successfully updated password! We will log you out now";
+                        if (isPasswordUpdated) {
+                                // Password updated successfully
+                                status = "Success";
+                                message = "Successfully updated password! We will log you out now";
+                        }
 
-                        return String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                                        status,
-                                        message);
                 } else
-                        return "{\"response\":{\"status\":\"Failed\",\"message\":\"Incorrect password!\"}}";
+                        message = "Incorrect password!";
+
+                return sendPayloadToClient();
         }
 }

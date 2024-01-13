@@ -12,29 +12,24 @@ public class SendFriendRequestEventHandler extends SharedEventHandler {
 
     @Override
     public String handleEvent(ClientRequest payload) {
+        message = "Email does not exist!";
 
-        String emailSender = payload.data.emailSender;
-        String emailRecipient = payload.data.emailRecipient;
+        String emailSender = payload.data.friendrequest.getSender().getEmail();
+        String emailRecipient = payload.data.friendrequest.getRecipient().getEmail();
 
-        logger.info("Sender email: {}\n Recipient email: {}\n", emailSender, emailRecipient);
+        List<User> dbSender = sharedUser.getUserIDByEmail(emailSender);
+        List<User> dbRecipient = sharedUser.getUserIDByEmail(emailRecipient);
 
-        List<User> dbSenderAuthUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(emailSender));
-        List<User> dbRecipientUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(emailRecipient));
+        if (!dbRecipient.isEmpty()) {
+            status = "Success";
+            message = "Invitation send to " + emailRecipient + " !";
 
-        if (!dbRecipientUser.isEmpty()) {
-
-            try {
-                chatDBManager.insertQuery(insertStatement.INSERT_FRIEND_REQUEST, DEFAULT_STATUS,
-                        dbSenderAuthUser.get(0).getId(), dbRecipientUser.get(0).getId());
-
-                return (String.format("{\"response\":{\"status\":\"Success\",\"message\":\"Invitation send to %s\"}}",
-                        emailRecipient));
-
-            } catch (Exception e) {
-                return "Error in SendFriendRequestEventHandler: {}" + e.getMessage();
-            }
-        } else {
-            return "{\"response\":{\"status\":\"Failed\",\"message\":\"Email does not exist!\"}}";
+            sharedFriendRequest.insertFriendRequest(DEFAULT_STATUS, dbSender.get(0).getId(),
+                    dbRecipient.get(0).getId());
         }
+
+        return sendPayloadToClient();
+
     }
+
 }

@@ -14,7 +14,8 @@ import model.GroupChat;
 public class DataResponse {
 
     public List<FriendRequest> friendrequests;
-    public List<User> users;
+    public User user;
     public List<Message> messages;
     public List<GroupChat> groupchats;
+
 }

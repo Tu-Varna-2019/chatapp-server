@@ -1,44 +1,24 @@
 package controller.events.handlers.message;
 
-import java.util.List;
-
 import controller.events.handlers.shared.SharedEventHandler;
-import model.Message;
 import model.dataclass.ClientRequest;
-import model.storage.S3Manager;
 
 public class DeleteMessageEventHandler extends SharedEventHandler {
 
         @Override
         public String handleEvent(ClientRequest payload) {
+                message = "Failed to delete message. Please try again!";
 
                 String messageID = payload.data.id;
-                try {
 
-                        List<Message> dbMessage = chatDBManager
-                                        .getMessagesQuery(getRecord.getMessageEQID(Integer.parseInt(messageID)));
+                boolean isDeleted = sharedMessage.deleteMessageEQID(Integer.parseInt(messageID));
 
-                        S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
-                                        + dbMessage.get(0).getAttachmentURL());
-
-                        boolean isDeleted = chatDBManager
-                                        .updateRecordQuery(
-                                                        deleteRecord.DeleteMessageEQID(Integer.parseInt(messageID)));
-
-                        String status = !isDeleted ? "Failed" : "Success";
-                        String message = !isDeleted ? "Unable to delete message!" : "Successfully deleted message!";
-
-                        return String.format(
-                                        "{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                                        status,
-                                        message);
-
-                } catch (Exception e) {
-                        logger.error("Error: {}", e.getMessage());
+                if (isDeleted) {
+                        status = "Success";
+                        message = "Message deleted!";
                 }
 
-                return (String.format(
-                                "{\"response\":{\"status\":\"%s\",\"message\":\"%s\", \"message\":\"%s\"}}",
-                                "Failed", "Error, please try again!"));
+                return sendPayloadToClient();
+
         }
 }

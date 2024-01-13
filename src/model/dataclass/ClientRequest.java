@@ -7,6 +7,6 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 public class ClientRequest {
     public String eventType;
     public DataRequest data;
-    // private String filter;
+    public FilterRequest filter;
 
 }

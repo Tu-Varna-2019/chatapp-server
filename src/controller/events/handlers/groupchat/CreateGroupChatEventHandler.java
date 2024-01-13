@@ -2,12 +2,18 @@ package controller.events.handlers.groupchat;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import controller.events.handlers.shared.SharedEventHandler;
 import model.GroupChat;
 import model.User;
 import model.dataclass.ClientRequest;
+import view.SocketConnection;
 
 public class CreateGroupChatEventHandler extends SharedEventHandler {
+    private static final Logger logger = LogManager
+            .getLogger(SocketConnection.class.getName());
 
     @Override
     public String handleEvent(ClientRequest payload) {
@@ -15,36 +21,25 @@ public class CreateGroupChatEventHandler extends SharedEventHandler {
         List<User> users = payload.data.groupchat.getUsers();
         String groupchatName = payload.data.groupchat.getName();
 
-        String email = users.get(0).getEmail();
+        message = groupchatName + " already exists!";
 
-        String status = "Failed";
-        String message = " already exists!";
+        String email = users.get(0).getEmail();
 
         logger.info("Creating new group chat with name: {}\n from user: {}", groupchatName, email);
 
-        try {
-            List<User> dbRetrievedUser = chatDBManager.getUsersQuery(getRecord.getUserEQEmail(email));
+        List<User> dbUser = sharedUser.getUserIDByEmail(email);
 
-            logger.info("Retrieved user: " + dbRetrievedUser.get(0).toString());
+        // Check if group chat name already exists
+        List<GroupChat> dbGroupChat = sharedGroupChat.getGroupChatEQName(groupchatName);
 
-            // Check if group chat name already exists
-            List<GroupChat> dbGroupChat = chatDBManager
-                    .getGroupChatQuery(
-                            getRecord.getGroupChatEQName(groupchatName));
-
-            if (dbGroupChat.isEmpty()) {
-                // Group chat name doesn't exists
-                status = "Success";
-                message = " created successfully!";
-                // Insert new group chat
-                chatDBManager.insertQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
-                        new Integer[] { dbRetrievedUser.get(0).getId() });
-            }
-
-        } catch (Exception e) {
-            logger.error("Error in CreateGroupChat: {}", e.getMessage());
+        if (dbGroupChat.isEmpty()) {
+            // Group chat name doesn't exists
+            status = "Success";
+            message = groupchatName + " created successfully!";
+            // Insert new group chat
+            sharedGroupChat.insertGroupChat(groupchatName, dbUser);
         }
-        return (String.format("{\"response\":{\"status\":\"%s\",\"message\":\"%s\"}}",
-                status, groupchatName + message));
+
+        return sendPayloadToClient();
     }
 }

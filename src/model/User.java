@@ -32,15 +32,8 @@ public class User {
         return username;
     }
 
-
     public boolean checkPassword(String password) {
         return this.password.equals(password);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("{\"id\":\"%d\", \"email\":\"%s\", \"password\":\"%s\", \"username\":\"%s\"}",
-                id, email, password, username);
     }
 
 }
