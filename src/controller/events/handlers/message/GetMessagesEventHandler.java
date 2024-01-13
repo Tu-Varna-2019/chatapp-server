@@ -1,12 +1,12 @@
 package controller.events.handlers.message;
 
 import controller.events.handlers.shared.SharedEventHandler;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class GetMessagesEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(ClientResponse payload) {
+        public String handleEvent(ClientRequest payload) {
 
                 String groupid = payload.data.id;
 

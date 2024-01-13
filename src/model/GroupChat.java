@@ -20,7 +20,6 @@ public class GroupChat {
         this.userids = userids;
     }
 
-    // Constructor for Jackson to deserialize
     @JsonCreator
     public GroupChat(@JsonProperty("id") Integer id, @JsonProperty("name") String name,
             @JsonProperty("users") List<User> users) {

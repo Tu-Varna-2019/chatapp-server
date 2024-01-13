@@ -4,12 +4,12 @@ import java.util.List;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class RenameEmailEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(ClientResponse payload) {
+        public String handleEvent(ClientRequest payload) {
 
                 String newEmail = payload.data.user.getEmail();
                 String oldEmail = payload.data.user.getUsername();

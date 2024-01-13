@@ -5,12 +5,12 @@ import java.util.List;
 import controller.events.handlers.shared.SharedEventHandler;
 import model.GroupChat;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class CreateGroupChatEventHandler extends SharedEventHandler {
 
     @Override
-    public String handleEvent(ClientResponse payload) {
+    public String handleEvent(ClientRequest payload) {
 
         List<User> users = payload.data.groupchat.getUsers();
         String groupchatName = payload.data.groupchat.getName();

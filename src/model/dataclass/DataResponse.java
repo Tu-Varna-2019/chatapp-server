@@ -1,21 +1,20 @@
 package model.dataclass;
 
-import model.FriendRequest;
-import model.GroupChat;
-import model.Message;
-import model.User;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
+import model.FriendRequest;
+import model.User;
+import model.Message;
+import model.GroupChat;
+
 @JsonInclude(Include.NON_NULL)
 public class DataResponse {
-    public User user;
-    public Message message;
-    public FriendRequest friendRequest;
-    public String id;
-    public String groupchatid;
-    public GroupChat groupchat;
-    public String emailSender;
-    public String emailRecipient;
+
+    public List<FriendRequest> friendrequests;
+    public List<User> users;
+    public List<Message> messages;
+    public List<GroupChat> groupchats;
 }

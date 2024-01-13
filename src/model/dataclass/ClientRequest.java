@@ -4,8 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 @JsonInclude(Include.NON_NULL)
-public class ClientResponse {
-    private String status;
-    private String message;
-    private DataResponse data;
+public class ClientRequest {
+    public String eventType;
+    public DataRequest data;
+    // private String filter;
+
 }

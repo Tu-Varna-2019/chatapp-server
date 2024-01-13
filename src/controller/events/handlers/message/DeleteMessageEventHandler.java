@@ -4,13 +4,13 @@ import java.util.List;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.Message;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 import model.storage.S3Manager;
 
 public class DeleteMessageEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(ClientResponse payload) {
+        public String handleEvent(ClientRequest payload) {
 
                 String messageID = payload.data.id;
                 try {

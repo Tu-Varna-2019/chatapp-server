@@ -6,12 +6,12 @@ import controller.events.handlers.shared.SharedEventHandler;
 import controller.helpers.Helpers;
 import model.GroupChat;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class GetGroupChatsEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(ClientResponse payload) {
+        public String handleEvent(ClientRequest payload) {
 
                 String email = payload.data.user.getEmail();
 

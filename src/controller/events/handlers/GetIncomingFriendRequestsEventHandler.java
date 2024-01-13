@@ -5,11 +5,11 @@ import java.util.List;
 import controller.events.handlers.shared.SharedEventHandler;
 import model.FriendRequest;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class GetIncomingFriendRequestsEventHandler extends SharedEventHandler {
     @Override
-    public String handleEvent(ClientResponse payload) {
+    public String handleEvent(ClientRequest payload) {
 
         String email = payload.data.user.getEmail();
         // JSON string formatter for final result

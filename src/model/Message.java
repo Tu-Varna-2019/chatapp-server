@@ -2,15 +2,26 @@ package model;
 
 import java.sql.Timestamp;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import model.dataclass.CustomTimestampDeserializer;
+
 public class Message {
 
     private int id;
     private String content;
     private String attachmentURL;
+
+    @JsonDeserialize(using = CustomTimestampDeserializer.class)
     private Timestamp timestamp;
     private User sender;
 
-    public Message(int id, String content, String attachmentURL, Timestamp timestamp, User sender) {
+    @JsonCreator
+    public Message(@JsonProperty("id") int id, @JsonProperty("content") String content,
+            @JsonProperty("attachmentURL") String attachmentURL,
+            @JsonProperty("timestamp") Timestamp timestamp,
+            @JsonProperty("sender") User sender) {
         this.id = id;
         this.content = content;
         this.attachmentURL = attachmentURL;

@@ -4,14 +4,14 @@ import java.util.List;
 
 import controller.events.handlers.shared.SharedEventHandler;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class SendFriendRequestEventHandler extends SharedEventHandler {
 
     private final String DEFAULT_STATUS = "Pending";
 
     @Override
-    public String handleEvent(ClientResponse payload) {
+    public String handleEvent(ClientRequest payload) {
 
         String emailSender = payload.data.emailSender;
         String emailRecipient = payload.data.emailRecipient;

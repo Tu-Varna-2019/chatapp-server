@@ -19,7 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import controller.events.EventHandler;
 import controller.events.EventHandlerRegistry;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 
 public class SocketConnection {
 
@@ -60,30 +60,21 @@ public class SocketConnection {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
             String stringPayload = reader.readLine();
-
-            JSONObject jsonPayload = new JSONObject(stringPayload);
             logger.info("Received payload: {}", stringPayload);
 
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setSerializationInclusion(Include.NON_NULL);
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            ClientResponse payload = mapper.readValue(jsonPayload.toString(), ClientResponse.class);
-
+            ClientRequest payload = deserializePayload(stringPayload);
             logger.info("Event type received: {}", payload.eventType);
 
             EventHandler eventHandler = EventHandlerRegistry.getEventHandler(payload.eventType);
 
             if (eventHandler != null) {
-
                 String response = eventHandler.handleEvent(payload);
-
                 // STILL ON TESTING for implementing the notification functionality
                 // if (eventType.equals("Login")) {
                 // logger.info("Client is now logged! Adding {} to sockets list!",
                 // decodedData.get("email"));
                 // sockets.put(decodedData.get("email"), clientSocket);
                 // }
-
                 logger.info("Response: {}", response);
                 writer.write(response);
                 writer.newLine();
@@ -92,11 +83,26 @@ public class SocketConnection {
                 logger.error("Error, unknown event: {}", payload.eventType);
             }
 
-        } catch (
-
-        IOException e) {
+        } catch (IOException e) {
             logger.error("I/O Exception in client request handling: ", e);
         }
+    }
+
+    private ClientRequest deserializePayload(String stringPayload) {
+        JSONObject jsonPayload = new JSONObject(stringPayload);
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setSerializationInclusion(Include.NON_NULL);
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        ClientRequest clientResponse = null;
+        try {
+            clientResponse = mapper.readValue(jsonPayload.toString(), ClientRequest.class);
+        } catch (IOException e) {
+            logger.error("Error deserializing payload: ", e);
+        }
+
+        return clientResponse;
     }
 
     public boolean sendEvent(String email, String response) {

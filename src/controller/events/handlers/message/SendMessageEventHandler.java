@@ -9,14 +9,14 @@ import controller.helpers.Helpers;
 import model.GroupChat;
 import model.Message;
 import model.User;
-import model.dataclass.ClientResponse;
+import model.dataclass.ClientRequest;
 import model.storage.S3Manager;
 import view.SocketConnection;
 
 public class SendMessageEventHandler extends SharedEventHandler {
 
         @Override
-        public String handleEvent(ClientResponse payload) {
+        public String handleEvent(ClientRequest payload) {
 
                 StringBuilder messagesJSON = new StringBuilder();
                 String status = "Failed";
