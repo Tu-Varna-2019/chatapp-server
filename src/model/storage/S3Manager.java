@@ -53,10 +53,8 @@ public class S3Manager {
                                 "Please make sure that your credentials file is at the correct " +
                                 "location (~/.aws/credentials), and is in valid format.",
                         e);
-
             }
         }
-
     }
 
     public static boolean uploadFile(String key, byte[] fileBytes) {
@@ -67,7 +65,6 @@ public class S3Manager {
             metadata.setContentLength(fileBytes.length);
             s3.putObject(
                     new PutObjectRequest(BUCKET_NAME, key, new ByteArrayInputStream(fileBytes), metadata));
-
             logger.info("File uploaded successfully!");
 
             return true;
@@ -84,7 +81,6 @@ public class S3Manager {
         getAWSCredentials();
         try {
             S3Object object = s3.getObject(new GetObjectRequest(BUCKET_NAME, key));
-
             logger.info("Content-Type: " + object.getObjectMetadata().getContentType());
 
             return object;
