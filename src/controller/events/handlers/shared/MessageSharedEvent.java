@@ -33,6 +33,9 @@ public class MessageSharedEvent extends SharedEventValues {
         } catch (Exception e) {
             logger.error("getMessages Error: {}", e.getMessage());
         }
+        // Mask sender password
+        dbMessages = maskSenderPassword(dbMessages);
+
         return dbMessages;
     }
 
@@ -59,6 +62,14 @@ public class MessageSharedEvent extends SharedEventValues {
             logger.error("Error: {}", e.getMessage());
         }
         return false;
+    }
+
+    private List<Message> maskSenderPassword(List<Message> dbMessages) {
+        return dbMessages.stream()
+                .peek(message -> {
+                    message.getSender().setPassowrd("");
+                })
+                .collect(Collectors.toList());
     }
 
 }

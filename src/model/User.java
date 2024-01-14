@@ -28,12 +28,26 @@ public class User {
         return password;
     }
 
+    public void setPassowrd(String password) {
+        this.password = password;
+    }
+
     public String getUsername() {
         return username;
     }
 
     public boolean checkPassword(String password) {
         return this.password.equals(password);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email=" + email +
+                ", username=" + username +
+                ", password=" + password +
+                '}';
     }
 
 }
