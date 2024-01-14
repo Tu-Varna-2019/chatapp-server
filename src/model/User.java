@@ -36,10 +36,4 @@ public class User {
         return this.password.equals(password);
     }
 
-    @Override
-    public String toString() {
-        return String.format("{\"id\":\"%d\", \"email\":\"%s\", \"password\":\"%s\", \"username\":\"%s\"}",
-                id, email, password, username);
-    }
-
 }
