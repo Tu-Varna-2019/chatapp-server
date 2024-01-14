@@ -14,6 +14,5 @@ public class DataRequest {
     public User user;
     public Message message;
     public FriendRequest friendrequest;
-    public String groupchatid;
     public GroupChat groupchat;
 }

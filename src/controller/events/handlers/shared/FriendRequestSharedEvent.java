@@ -50,7 +50,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         switch (filterFriendRequest.getStatus()) {
             case "Pending":
                 // Get friend requests that are pending for the sender
-                if (filterFriendRequest.getSender() != null)
+                if (!filterFriendRequest.getSender().getEmail().isEmpty())
                     return getRecord.getFriendRequestPendingEQSenderID(senderID);
                 // Get friend requests that are pending for the recipient
                 else

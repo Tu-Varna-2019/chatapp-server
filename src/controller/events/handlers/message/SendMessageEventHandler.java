@@ -16,7 +16,7 @@ public class SendMessageEventHandler extends SharedEventHandler {
         public String handleEvent(ClientRequest payload) {
                 message = "Failed to send message. Please try again!";
 
-                String groupChatID = payload.data.groupchatid;
+                String groupChatID = payload.data.id;
                 Message messageModel = payload.data.message;
 
                 String fileAttachment = uploadAttachmentFile(messageModel.getAttachmentURL(),

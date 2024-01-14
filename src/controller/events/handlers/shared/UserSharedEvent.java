@@ -15,7 +15,7 @@ public class UserSharedEvent extends SharedEventValues {
             dbSender = chatDBManager.getUsersQuery(
                     getRecord.getUserEQEmail(email));
 
-            logger.info("Retrieved sender: " + dbSender.get(0).toString());
+            logger.info("Retrieved user: " + dbSender.get(0).toString());
         } catch (Exception e) {
             logger.error("getUserIDByEmail Error: {}", e.getMessage());
         }
