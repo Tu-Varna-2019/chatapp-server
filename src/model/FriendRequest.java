@@ -33,4 +33,12 @@ public class FriendRequest {
         return recipient;
     }
 
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
 }

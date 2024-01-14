@@ -1,5 +1,6 @@
 package controller.events.handlers.shared;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.FriendRequest;
@@ -16,7 +17,13 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                     .getFriendRequestQuery(
                             filteredGetRecord);
 
-            logger.info("Retrieved sender: " + dbFriendRequest.get(0).toString());
+            logger.info("Retrieved friends: " + dbFriendRequest.get(0).toString());
+
+            // Check if the status is accepted to get all friend requests that are accepted
+            // and move them in recipient field
+            if (filterFriendRequest.getStatus().equals("Accepted"))
+                dbFriendRequest = filterFriendRequestNEQAuthUser(dbFriendRequest, senderID);
+
         } catch (Exception e) {
             logger.error("getUserIDByEmail Error: {}", e.getMessage());
         }
@@ -63,6 +70,22 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                 return getRecord.getFriendRequestEQSenderID(senderID);
         }
 
+    }
+
+    private List<FriendRequest> filterFriendRequestNEQAuthUser(List<FriendRequest> dbFriendRequest, int authUserID) {
+        List<FriendRequest> filteredFriendRequests = new ArrayList<>();
+
+        for (FriendRequest friendRequest : dbFriendRequest) {
+            if (friendRequest.getSender().getId() != authUserID && friendRequest.getRecipient().getId() != authUserID) {
+                filteredFriendRequests.add(friendRequest);
+            } else if (friendRequest.getSender().getId() != authUserID) {
+                friendRequest.setRecipient(friendRequest.getSender());
+                friendRequest.setSender(null);
+                filteredFriendRequests.add(friendRequest);
+            }
+        }
+
+        return filteredFriendRequests;
     }
 
 }
