@@ -22,6 +22,33 @@ public class GroupChatSharedEvent extends SharedEventValues {
         return dbGroupChat;
     }
 
+    public boolean updateUserFromGroupChatEQGPID(int groupchatid, int userid, String mode) {
+        String updateQuery = "";
+        switch (mode) {
+            case "Add":
+                updateQuery = updateRecord.AddUserFromGroupChatEQGPID(groupchatid, userid);
+                break;
+            case "Remove":
+                updateQuery = updateRecord.RemoveUserFromGroupChatEQGPID(groupchatid, userid);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid mode: " + mode);
+        }
+
+        try {
+            boolean isUpdated = chatDBManager
+                    .updateRecordQuery(
+                            updateQuery);
+
+            return isUpdated;
+
+        } catch (Exception e) {
+            logger.error("updateUserFromGroupChatEQGPID Error: {}", e.getMessage());
+        }
+
+        return false;
+    }
+
     public List<GroupChat> getGroupChatEQUserID(int userID) {
         List<GroupChat> dbGroupChat = null;
         try {

@@ -60,6 +60,7 @@ public class SocketConnection {
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))) {
 
             String stringPayload = reader.readLine();
+
             logger.info("Received payload: {}", stringPayload);
 
             ClientRequest payload = deserializePayload(stringPayload);

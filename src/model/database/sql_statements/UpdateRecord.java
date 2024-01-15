@@ -15,4 +15,16 @@ public class UpdateRecord {
 
         return "UPDATE \"User\" SET password = '" + password + "' WHERE id= " + id + ";";
     };
+
+    public final String RemoveUserFromGroupChatEQGPID(int groupchatid, int userid) {
+
+        return "UPDATE \"GroupChat\" SET userids= array_remove(userids," + userid + ") WHERE id= " + groupchatid + ";";
+
+    };
+
+    public final String AddUserFromGroupChatEQGPID(int groupchatid, int userid) {
+
+        return "UPDATE \"GroupChat\" SET userids= array_append(userids," + userid + ") WHERE id= " + groupchatid + ";";
+
+    };
 }

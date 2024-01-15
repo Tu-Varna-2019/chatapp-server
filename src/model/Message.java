@@ -59,7 +59,6 @@ public class Message {
         return "Message{" +
                 "id=" + id +
                 ", content='" + content + '\'' +
-                ", attachmentURL='" + attachmentURL + '\'' +
                 ", timestamp=" + timestamp +
                 ", sender=" + sender +
                 '}';
