@@ -49,6 +49,13 @@ public class GroupChatSharedEvent extends SharedEventValues {
         return false;
     }
 
+    public boolean checkIfUserAlreadyInGroupChatEQGPID(int groupchatid, int userid) {
+
+        return chatDBManager
+                .getRecordExists(
+                        getRecord.checkIfUserAlreadyInGroupChat(groupchatid, userid));
+    }
+
     public List<GroupChat> getGroupChatEQUserID(int userID) {
         List<GroupChat> dbGroupChat = null;
         try {

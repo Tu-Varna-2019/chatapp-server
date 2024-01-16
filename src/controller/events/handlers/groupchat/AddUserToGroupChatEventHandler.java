@@ -18,13 +18,22 @@ public class AddUserToGroupChatEventHandler extends SharedEventHandler {
 
             List<User> dbUser = sharedUser.getUserIDByEmail(email);
 
-            boolean isUserAddedFromGroupChat = sharedGroupChat
-                    .updateUserFromGroupChatEQGPID(groupchatid, dbUser.get(0).getId(), "Add");
+            boolean isUserAlreadyInGroupChat = sharedGroupChat.checkIfUserAlreadyInGroupChatEQGPID(groupchatid,
+                    dbUser.get(0).getId());
 
-            if (isUserAddedFromGroupChat) {
-                // User added from group chat successfully
-                status = "Success";
-                message = "User added to group chat successfully!";
+            if (isUserAlreadyInGroupChat) {
+                status = "Failed";
+                message = "User is already present in group chat!";
+
+            } else {
+                boolean isUserAddedFromGroupChat = sharedGroupChat
+                        .updateUserFromGroupChatEQGPID(groupchatid, dbUser.get(0).getId(), "Add");
+
+                if (isUserAddedFromGroupChat) {
+                    // User added from group chat successfully
+                    status = "Success";
+                    message = "User added to group chat successfully!";
+                }
             }
         }
 
