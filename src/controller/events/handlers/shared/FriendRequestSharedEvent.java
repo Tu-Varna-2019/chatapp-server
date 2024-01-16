@@ -91,4 +91,17 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         return filteredFriendRequests;
     }
 
+    public boolean updateStatusFriendRequest(String status, int id) {
+        try {
+            boolean isUpdated = chatDBManager
+                    .updateRecordQuery(
+                            updateRecord.UpdateFriendRequest(status, id));
+
+            return isUpdated;
+        } catch (Exception e) {
+            logger.error("Error: {}", e.getMessage());
+        }
+        return false;
+    }
+
 }

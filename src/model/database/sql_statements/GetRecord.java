@@ -59,6 +59,6 @@ public class GetRecord {
 
     public final String getFriendRequestAcceptedEQSenderID(int id) {
         return "SELECT * FROM \"FriendRequest\" WHERE senderid=" + id + " OR recipientid= " + id
-                + " AND status='Accepted';";
+                + " AND status='Accepted' ;";
     }
 };

@@ -15,4 +15,8 @@ public class UpdateRecord {
 
         return "UPDATE \"User\" SET password = '" + password + "' WHERE id= " + id + ";";
     };
+
+    public final String UpdateFriendRequest(String status, int id) {
+        return "UPDATE \"FriendRequest\" SET status = '" + status + "' WHERE id = " + id + " ;";
+    }
 }
