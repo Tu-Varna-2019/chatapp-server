@@ -7,6 +7,31 @@ import model.User;
 import model.dataclass.ClientRequest;
 
 public class SendFriendRequestEventHandler extends SharedEventHandler {
+    /*
+     * Expected payload format:
+     *
+     * {
+     * "eventType": "SendFriendRequest",
+     * "data": {
+     * "friendrequest": {
+     * "id": 0,
+     * "status": "Pending",
+     * "recipient": {
+     * "id": 0,
+     * "username": "",
+     * "email": "qq@qq.bg",
+     * "password": ""
+     * },
+     * "sender": {
+     * "id": 0,
+     * "username": "me2",
+     * "email": "me@me.bg",
+     * "password": ""
+     * }
+     * }
+     * }
+     * }
+     */
 
     private final String DEFAULT_STATUS = "Pending";
 
@@ -21,11 +46,20 @@ public class SendFriendRequestEventHandler extends SharedEventHandler {
         List<User> dbRecipient = sharedUser.getUserIDByEmail(emailRecipient);
 
         if (!dbRecipient.isEmpty()) {
-            status = "Success";
-            message = "Invitation send to " + emailRecipient + " !";
 
-            sharedFriendRequest.insertFriendRequest(DEFAULT_STATUS, dbSender.get(0).getId(),
-                    dbRecipient.get(0).getId());
+            String checkForExistingFQMessage = sharedFriendRequest
+                    .checkIfFriendRequestExistsEQSenderRecipientID(
+                            dbSender.get(0).getId(), dbRecipient.get(0).getId());
+
+            // Check if the friend request already exists
+            if (!checkForExistingFQMessage.isEmpty())
+                message = checkForExistingFQMessage;
+            else {
+                status = "Success";
+                message = "Invitation send to " + emailRecipient + " !";
+                sharedFriendRequest.insertFriendRequest(DEFAULT_STATUS, dbSender.get(0).getId(),
+                        dbRecipient.get(0).getId());
+            }
         }
 
         return sendPayloadToClient();

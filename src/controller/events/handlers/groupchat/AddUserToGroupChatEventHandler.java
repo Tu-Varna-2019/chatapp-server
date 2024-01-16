@@ -7,6 +7,17 @@ import model.User;
 import model.dataclass.ClientRequest;
 
 public class AddUserToGroupChatEventHandler extends SharedEventHandler {
+    /*
+     * Expected payload format:
+     * {
+     * "event": "AddUserToGroupChat",
+     * "data": {
+     * "id": "1", <-- eg. groupchatid
+     * "user": {
+     * "username": "Empty",
+     * "email": "john@doe.email.com",
+     * "password": "Empty",
+     */
     @Override
     public String handleEvent(ClientRequest payload) {
         message = "No user found!";

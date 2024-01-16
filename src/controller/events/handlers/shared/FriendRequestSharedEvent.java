@@ -48,6 +48,26 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         return dbFriendRequest;
     }
 
+    public String checkIfFriendRequestExistsEQSenderRecipientID(int senderid, int recipientid) {
+
+        String[] status = { "Pending", "Accepted" };
+
+        for (String statusIterator : status) {
+
+            boolean doesFriendRequestAlreadyExist = chatDBManager.getRecordExists(
+                    getRecord.checkIfFriendRequestExistsEQSenderRecipientID(senderid, recipientid, statusIterator));
+
+            if (doesFriendRequestAlreadyExist)
+                return statusIterator.equals("Pending")
+                        // Check if the existing friend request is pending
+                        ? "You have already sent the friend request invitation. Status: " + statusIterator
+                        // Check if the existing friend request is accepted
+                        : "You are already friends with the user. Status: " + statusIterator;
+        }
+
+        return "";
+    }
+
     public void insertFriendRequest(String status, int senderID, int recipientID) {
         chatDBManager.insertQuery(insertStatement.INSERT_FRIEND_REQUEST, status, senderID, recipientID);
     }
