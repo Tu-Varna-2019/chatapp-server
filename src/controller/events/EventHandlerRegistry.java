@@ -30,6 +30,7 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("CreateGroupChat", new CreateGroupChatEventHandler());
         eventHandlerMap.put("RemoveUserFromGroupChat", new RemoveUserFromGroupChatEventHandler());
         eventHandlerMap.put("AddUserToGroupChat", new AddUserToGroupChatEventHandler());
+        eventHandlerMap.put("DeleteGroupChat", new DeleteGroupChatEventHandler());
 
         // Friend requests
         eventHandlerMap.put("GetFriendRequests", new GetFriendRequestsEventHandler());

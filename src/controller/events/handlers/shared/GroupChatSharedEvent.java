@@ -83,4 +83,17 @@ public class GroupChatSharedEvent extends SharedEventValues {
         chatDBManager.insertQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
                 new Integer[] { dbRetrievedUser.get(0).getId() });
     }
+
+    public boolean deleteGroupChatEQID(int groupchatid) {
+        try {
+            boolean isDeleted = chatDBManager
+                    .updateRecordQuery(
+                            deleteRecord.DeleteGroupChatEQID(groupchatid));
+
+            return isDeleted;
+        } catch (Exception e) {
+            logger.error("Error: {}", e.getMessage());
+        }
+        return false;
+    }
 }
