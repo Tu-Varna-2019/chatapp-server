@@ -4,8 +4,6 @@ import java.sql.Timestamp;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import model.dataclass.CustomTimestampDeserializer;
 
 public class Message {
 
@@ -13,7 +11,6 @@ public class Message {
     private String content;
     private String attachmentURL;
 
-    @JsonDeserialize(using = CustomTimestampDeserializer.class)
     private Timestamp timestamp;
     private User sender;
 
@@ -55,6 +52,16 @@ public class Message {
 
     public void setAttachmentURL(String attachmentURL) {
         this.attachmentURL = attachmentURL;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "id=" + id +
+                ", content='" + content + '\'' +
+                ", timestamp=" + timestamp +
+                ", sender=" + sender +
+                '}';
     }
 
 }

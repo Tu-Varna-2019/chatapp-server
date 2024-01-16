@@ -58,7 +58,18 @@ public class GetRecord {
     };
 
     public final String getFriendRequestAcceptedEQSenderID(int id) {
-        return "SELECT * FROM \"FriendRequest\" WHERE senderid=" + id + " OR recipientid= " + id
-                + " AND status='Accepted';";
-    }
+        return "SELECT * FROM \"FriendRequest\" WHERE (senderid=" + id + " OR recipientid= " + id
+                + ") AND status='Accepted';";
+    };
+
+    public final String checkIfFriendRequestExistsEQSenderRecipientID(int senderid, int recipientid, String status) {
+        return "SELECT 1 FROM \"FriendRequest\" WHERE (senderid=" + senderid + " AND recipientid= " + recipientid
+                + ") OR (senderid=" + recipientid + " AND recipientid=" + senderid + ") AND status='" + status + "' ;";
+    };
+
+    public final String checkIfUserAlreadyInGroupChat(int groupchatid, int userid) {
+        return "SELECT EXISTS( SELECT 1 FROM \"GroupChat\" WHERE id =" + groupchatid + " AND " + userid
+                + " = ANY(userids));";
+    };
+
 };

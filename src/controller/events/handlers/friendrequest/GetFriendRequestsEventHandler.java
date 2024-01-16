@@ -8,6 +8,30 @@ import model.User;
 import model.dataclass.ClientRequest;
 
 public class GetFriendRequestsEventHandler extends SharedEventHandler {
+        /*
+         * Expected payload format:
+         *
+         * For getting all friend requests, that have Accepted status, either on the
+         * sender or reciever side:
+         * {
+         * {
+         * "eventType":"GetFriendRequests","
+         * data":{
+         * "id":"",
+         * "user":{
+         * "id":0,
+         * "username":"me2",
+         * "email":"me@me.bg",
+         * "password":""}
+         * },
+         * "filter":{
+         * "friendrequest":{
+         * "id":0,
+         * "status":"Accepted",
+         * "recipient":{"id":0,"username":"","email":"","password":""},
+         * "sender":{"id":0,"username":"","email":"","password":""}
+         * }}}
+         */
 
         @Override
         public String handleEvent(ClientRequest payload) {

@@ -69,6 +69,20 @@ public class ChatDBManager {
         return this.connection;
     }
 
+    public boolean getRecordExists(String query) {
+
+        try (PreparedStatement pst = connection.prepareStatement(query)) {
+
+            try (ResultSet rs = pst.executeQuery()) {
+                if (rs.next())
+                    return rs.getBoolean(1);
+            }
+        } catch (SQLException ex) {
+            logger.error(ex.getMessage());
+        }
+        return false;
+    }
+
     public List<User> getUsersQuery(String query) {
         List<User> queryResultList = new ArrayList<>();
 

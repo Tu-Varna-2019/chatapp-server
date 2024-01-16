@@ -48,4 +48,14 @@ public class GroupChat {
         this.users = users;
     }
 
+    @Override
+    public String toString() {
+        return "GroupChat{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", userids=" + userids +
+                ", users=" + users +
+                '}';
+    }
+
 }

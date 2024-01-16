@@ -3,19 +3,10 @@ package controller.events;
 import java.util.HashMap;
 import java.util.Map;
 
-import controller.events.handlers.friendrequest.GetFriendRequestsEventHandler;
-import controller.events.handlers.friendrequest.SendFriendRequestEventHandler;
-import controller.events.handlers.groupchat.CreateGroupChatEventHandler;
-import controller.events.handlers.groupchat.GetGroupChatsEventHandler;
-import controller.events.handlers.message.DeleteMessageEventHandler;
-import controller.events.handlers.message.GetMessagesEventHandler;
-import controller.events.handlers.message.SendMessageEventHandler;
-import controller.events.handlers.user.ChangePasswordEventHandler;
-import controller.events.handlers.user.DeleteAccountEventHandler;
-import controller.events.handlers.user.LoginEventHandler;
-import controller.events.handlers.user.RenameEmailEventHandler;
-import controller.events.handlers.user.RenameUsernameEventHandler;
-import controller.events.handlers.user.SignUpEventHandler;
+import controller.events.handlers.groupchat.*;
+import controller.events.handlers.friendrequest.*;
+import controller.events.handlers.message.*;
+import controller.events.handlers.user.*;
 
 /*
  * This class is used to register all the event handlers
@@ -37,6 +28,8 @@ public class EventHandlerRegistry {
         // GroupChat
         eventHandlerMap.put("GetGroupChats", new GetGroupChatsEventHandler());
         eventHandlerMap.put("CreateGroupChat", new CreateGroupChatEventHandler());
+        eventHandlerMap.put("RemoveUserFromGroupChat", new RemoveUserFromGroupChatEventHandler());
+        eventHandlerMap.put("AddUserToGroupChat", new AddUserToGroupChatEventHandler());
 
         // Friend requests
         eventHandlerMap.put("GetFriendRequests", new GetFriendRequestsEventHandler());

@@ -41,4 +41,14 @@ public class FriendRequest {
         this.sender = sender;
     }
 
+    @Override
+    public String toString() {
+        return "FriendRequest{" +
+                "id=" + id +
+                ", status='" + status + '\'' +
+                ", sender=" + sender +
+                ", recipient=" + recipient +
+                '}';
+    }
+
 }
