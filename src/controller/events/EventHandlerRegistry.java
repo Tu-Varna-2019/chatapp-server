@@ -35,6 +35,7 @@ public class EventHandlerRegistry {
         // Friend requests
         eventHandlerMap.put("GetFriendRequests", new GetFriendRequestsEventHandler());
         eventHandlerMap.put("SendFriendRequest", new SendFriendRequestEventHandler());
+        eventHandlerMap.put("FriendRequestOperation", new FriendRequestOperation());
 
         // Messages
         eventHandlerMap.put("GetMessages", new GetMessagesEventHandler());

@@ -106,10 +106,22 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             filteredFriendRequests.add(new FriendRequest(friendRequest.getId(), friendRequest.getStatus(),
                     new User(0, "", "", ""), retrievedUser));
-
         }
 
         return filteredFriendRequests;
+    }
+
+    public boolean updateStatusFriendRequest(String status, int friendrequestid) {
+        try {
+            boolean isUpdated = chatDBManager
+                    .updateRecordQuery(
+                            updateRecord.UpdateFriendRequestStatusEQID(status, friendrequestid));
+
+            return isUpdated;
+        } catch (Exception e) {
+            logger.error("Error: {}", e.getMessage());
+        }
+        return false;
     }
 
 }
