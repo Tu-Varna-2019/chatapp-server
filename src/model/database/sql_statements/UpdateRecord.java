@@ -27,4 +27,8 @@ public class UpdateRecord {
         return "UPDATE \"GroupChat\" SET userids= array_append(userids," + userid + ") WHERE id= " + groupchatid + ";";
 
     };
+
+    public final String UpdateFriendRequestStatusEQID(String status, int friendrequestid) {
+        return "UPDATE \"FriendRequest\" SET status= '" + status + "' WHERE id= " + friendrequestid + " ;";
+    }
 }

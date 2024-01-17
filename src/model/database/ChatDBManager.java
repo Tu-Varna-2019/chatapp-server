@@ -139,7 +139,7 @@ public class ChatDBManager {
                 List<User> dbRecipient = getUsersQuery(getRecord.getUserEQID(recipientIdsArray));
 
                 FriendRequest friendRequest = new FriendRequest(rs.getInt("id"), rs.getString("status"),
-                        dbRecipient.get(0), dbSender.get(0));
+                        dbSender.get(0), dbRecipient.get(0));
 
                 queryResultList.add(friendRequest);
             }

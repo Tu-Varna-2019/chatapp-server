@@ -1,6 +1,7 @@
 package controller.events.handlers.shared;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import model.FriendRequest;
@@ -10,25 +11,27 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
     public List<FriendRequest> getFriendRequestEQSenderID(int senderID, FriendRequest filterFriendRequest) {
 
-        String filteredGetRecord = filterGetRecord(filterFriendRequest, senderID);
-
         List<FriendRequest> dbFriendRequest = null;
         try {
+            String filteredGetRecord = filterGetRecord(filterFriendRequest, senderID);
+
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
                             filteredGetRecord);
 
             // Check if the status is accepted to get all friend requests that are accepted
             // and move them in recipient field
-            if (filterFriendRequest.getStatus().equals("Accepted"))
+            if (filterFriendRequest.getStatus().equals("Accepted")
+                    || filteredGetRecord.equals(getRecord.getReceivedFriendRequests(senderID)))
                 dbFriendRequest = filterFriendRequestNEQAuthUser(dbFriendRequest, senderID);
 
             logger.info("Retrieved friends: " + dbFriendRequest.get(0).toString());
 
+            return dbFriendRequest;
         } catch (Exception e) {
-            logger.error("getUserIDByEmail Error: {}", e.getMessage());
+            logger.error("getFriendRequestEQSenderID Error: {}", e.getMessage());
+            return Collections.emptyList();
         }
-        return dbFriendRequest;
     }
 
     public List<FriendRequest> getFriendRequestEQSenderID(int senderID) {
@@ -64,7 +67,6 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                         // Check if the existing friend request is accepted
                         : "You are already friends with the user. Status: " + statusIterator;
         }
-
         return "";
     }
 
@@ -78,8 +80,9 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         switch (filterFriendRequest.getStatus()) {
             case "Pending":
                 // Get friend requests that are pending for the sender
-                if (!filterFriendRequest.getSender().getEmail().isEmpty())
+                if (!filterFriendRequest.getSender().getEmail().isEmpty()) {
                     return getRecord.getFriendRequestPendingEQSenderID(senderID);
+                }
                 // Get friend requests that are pending for the recipient
                 else
                     return getRecord.getReceivedFriendRequests(senderID);
@@ -88,7 +91,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                 return getRecord.getFriendRequestAcceptedEQSenderID(senderID);
 
             default:
-                return getRecord.getFriendRequestEQSenderID(senderID);
+                throw new IllegalArgumentException("Invalid status: " + filterFriendRequest.getStatus());
         }
 
     }
@@ -106,10 +109,35 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             filteredFriendRequests.add(new FriendRequest(friendRequest.getId(), friendRequest.getStatus(),
                     new User(0, "", "", ""), retrievedUser));
-
         }
 
         return filteredFriendRequests;
+    }
+
+    public boolean updateStatusFriendRequest(String status, int friendrequestid) {
+        try {
+            boolean isUpdated = chatDBManager
+                    .updateRecordQuery(
+                            updateRecord.UpdateFriendRequestStatusEQID(status, friendrequestid));
+
+            return isUpdated;
+        } catch (Exception e) {
+            logger.error("Error: {}", e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean deleteFriendRequestEQID(int friendrequestid) {
+        try {
+            boolean isDeleted = chatDBManager
+                    .updateRecordQuery(
+                            deleteRecord.DeleteFriendRequestEQID(friendrequestid));
+
+            return isDeleted;
+        } catch (Exception e) {
+            logger.error("Error: {}", e.getMessage());
+        }
+        return false;
     }
 
 }

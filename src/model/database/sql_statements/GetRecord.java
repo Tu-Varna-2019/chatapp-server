@@ -58,8 +58,8 @@ public class GetRecord {
     };
 
     public final String getFriendRequestAcceptedEQSenderID(int id) {
-        return "SELECT * FROM \"FriendRequest\" WHERE (senderid=" + id + " OR recipientid= " + id
-                + ") AND status='Accepted';";
+        return "SELECT * FROM \"FriendRequest\" WHERE ((senderid=" + id + " OR recipientid= " + id
+                + ") AND status='Accepted');";
     };
 
     public final String checkIfFriendRequestExistsEQSenderRecipientID(int senderid, int recipientid, String status) {
