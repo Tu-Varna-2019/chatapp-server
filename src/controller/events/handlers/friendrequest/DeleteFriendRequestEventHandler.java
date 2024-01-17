@@ -3,15 +3,19 @@ package controller.events.handlers.friendrequest;
 import controller.events.handlers.shared.SharedEventHandler;
 import model.dataclass.ClientRequest;
 
-public class FriendRequestOperation extends SharedEventHandler {
+public class DeleteFriendRequestEventHandler extends SharedEventHandler {
 
     /*
+     * Expected payload format:
+     *
+     * For getting all friend requests, that have Accepted status, either on the
+     * sender or reciever side:
      * {
-     * "eventType": "FriendRequestOperation",
+     * "eventType": "DeleteFriendRequest",
      * "data": {
      * "friendrequest": {
-     * "id": 30,
-     * "status": "Accepted" OR "Rejected" <=== Required
+     * "id": 29, <============== REQUIRED
+     * "status": "Accepted",
      * "recipient": {
      * "id": 69,
      * "username": "q",
@@ -30,16 +34,15 @@ public class FriendRequestOperation extends SharedEventHandler {
      */
     @Override
     public String handleEvent(ClientRequest payload) {
+        message = "Deletion of friend request failed. Please try again!";
 
-        String friendrequestStatus = payload.data.friendrequest.getStatus();
         Integer friendrequestid = payload.data.friendrequest.getId();
 
-        boolean isUpdateSucceded = sharedFriendRequest.updateStatusFriendRequest(friendrequestStatus,
-                friendrequestid);
+        boolean isFriendRequestDeleted = sharedFriendRequest.deleteFriendRequestEQID(friendrequestid);
 
-        if (isUpdateSucceded) {
+        if (isFriendRequestDeleted) {
             status = "Success";
-            message = "Friend request " + friendrequestStatus + " !";
+            message = "Friend request removed successfully!";
         }
 
         return sendPayloadToClient();

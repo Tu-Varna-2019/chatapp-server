@@ -31,6 +31,47 @@ public class GetFriendRequestsEventHandler extends SharedEventHandler {
          * "recipient":{"id":0,"username":"","email":"","password":""},
          * "sender":{"id":0,"username":"","email":"","password":""}
          * }}}
+         *
+         * ------------------------------------------------------------
+         * * For getting all friend requests, that have Pending status, that the auth
+         * user is the sender (If you want to get all friend requests, that the auth
+         * user is the recipient, just change the sender email to be empty and full the
+         * recipient email with something):
+         * {
+         * "eventType": "GetFriendRequests",
+         * "data": {
+         * "id": "",
+         * "user": {
+         * "id": 0,
+         * "username": "me2",
+         * "email": "me@me.bg",
+         * "password": ""
+         * }
+         * },
+         * "filter": {
+         * "friendrequest": {
+         * "id": 0,
+         * "status": "Pending",
+         * "recipient": {
+         * "id": 0,
+         * "username": "",
+         * "email": "",
+         * "password": ""
+         * },
+         * "sender": {
+         * "id": 0,
+         * "username": "",
+         * "email": "Non empty", // This is the only field that is not empty for sender
+         * "password": ""
+         * }
+         * "recipient": {
+         * "id": 0,
+         * "username": "",
+         * "email": "", // EMPTY!! This is the only field that shouldn't be empty for
+         * recipient
+         * "password": ""
+         * }
+         * }}}
          */
 
         @Override
@@ -57,6 +98,9 @@ public class GetFriendRequestsEventHandler extends SharedEventHandler {
                                 status = "Success";
                                 message = "Friend request found!";
                                 dataResponse.friendrequests = dbFriendRequest;
+                        } else {
+                                status = "Error";
+                                dataResponse.friendrequests.clear();
                         }
                 }
 

@@ -29,6 +29,6 @@ public class UpdateRecord {
     };
 
     public final String UpdateFriendRequestStatusEQID(String status, int friendrequestid) {
-        return "UPDATE \"FriendRequest\" SET status = '" + status + "' WHERE id = " + friendrequestid + " ;";
+        return "UPDATE \"FriendRequest\" SET status= '" + status + "' WHERE id= " + friendrequestid + " ;";
     }
 }
