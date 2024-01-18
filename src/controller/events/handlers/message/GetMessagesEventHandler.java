@@ -20,6 +20,10 @@ public class GetMessagesEventHandler extends SharedEventHandler {
                         status = "Success";
                         message = "Messages found for the group id: " + groupid + " !";
                         dataResponse.messages = dbMessages;
+                } else {
+                        status = "Error";
+                        if (dataResponse.messages != null)
+                                dataResponse.messages.clear();
                 }
 
                 return sendPayloadToClient();

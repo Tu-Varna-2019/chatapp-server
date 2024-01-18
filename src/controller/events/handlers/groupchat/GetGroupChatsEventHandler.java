@@ -25,6 +25,10 @@ public class GetGroupChatsEventHandler extends SharedEventHandler {
                                 status = "Success";
                                 message = "Found group chat with the authenticated user!";
                                 dataResponse.groupchats = dbGroupChat;
+                        } else {
+                                status = "Error";
+                                if (dataResponse.groupchats != null)
+                                        dataResponse.groupchats.clear();
                         }
                 }
 

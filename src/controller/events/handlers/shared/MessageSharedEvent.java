@@ -1,5 +1,6 @@
 package controller.events.handlers.shared;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +31,15 @@ public class MessageSharedEvent extends SharedEventValues {
                     })
                     .collect(Collectors.toList());
 
+            // Mask sender password
+            dbMessages = maskSenderPassword(dbMessages);
+
+            return dbMessages;
+
         } catch (Exception e) {
             logger.error("getMessages Error: {}", e.getMessage());
+            return Collections.emptyList();
         }
-        // Mask sender password
-        dbMessages = maskSenderPassword(dbMessages);
-
-        return dbMessages;
     }
 
     public void insertMessage(Message messageModel, String groupChatID, List<User> dbSender) {

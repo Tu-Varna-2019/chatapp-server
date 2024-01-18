@@ -53,19 +53,29 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
     public String checkIfFriendRequestExistsEQSenderRecipientID(int senderid, int recipientid) {
 
-        String[] status = { "Pending", "Accepted" };
+        List<FriendRequest> dbFriendRequest = null;
+        String[] status = { "Pending", "Accepted", "Rejected" };
 
         for (String statusIterator : status) {
 
-            boolean doesFriendRequestAlreadyExist = chatDBManager.getRecordExists(
-                    getRecord.checkIfFriendRequestExistsEQSenderRecipientID(senderid, recipientid, statusIterator));
+            dbFriendRequest = chatDBManager
+                    .getFriendRequestQuery(
+                            getRecord.checkIfFriendRequestExistsEQSenderRecipientID(senderid, recipientid,
+                                    statusIterator));
 
-            if (doesFriendRequestAlreadyExist)
-                return statusIterator.equals("Pending")
-                        // Check if the existing friend request is pending
-                        ? "You have already sent the friend request invitation. Status: " + statusIterator
-                        // Check if the existing friend request is accepted
-                        : "You are already friends with the user. Status: " + statusIterator;
+            if (!dbFriendRequest.isEmpty()) {
+                if (statusIterator.equals("Pending"))
+                    return "You have already sent the friend request invitation. Status: " + statusIterator;
+                else if (statusIterator.equals("Accepted"))
+                    return "You are already friends with the user. Status: " + statusIterator;
+                else if (statusIterator.equals("Rejected")) {
+                    chatDBManager
+                            .updateRecordQuery(
+                                    updateRecord.UpdateFriendRequestStatusEQID("Pending",
+                                            dbFriendRequest.get(0).getId()));
+                    return "User already rejected the friend request invitation. Now setting it back to Pending";
+                }
+            }
         }
         return "";
     }

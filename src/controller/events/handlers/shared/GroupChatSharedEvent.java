@@ -1,5 +1,6 @@
 package controller.events.handlers.shared;
 
+import java.util.Collections;
 import java.util.List;
 
 import controller.helpers.Helpers;
@@ -71,12 +72,14 @@ public class GroupChatSharedEvent extends SharedEventValues {
                                                 groupChat.getUserids())));
                         groupChat.setUsers(users);
                     });
-
             logger.info("Retrieved group chat: " + dbGroupChat.get(0).toString());
+
+            return dbGroupChat;
         } catch (Exception e) {
             logger.error("getUserIDByEmail Error: {}", e.getMessage());
+            return Collections.emptyList();
         }
-        return dbGroupChat;
+
     }
 
     public void insertGroupChat(String groupchatName, List<User> dbRetrievedUser) {
