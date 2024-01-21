@@ -12,8 +12,6 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
-import com.amazonaws.http.exception.HttpRequestTimeoutException;
-
 import model.FriendRequest;
 import model.GroupChat;
 import model.Message;
@@ -29,20 +27,19 @@ public class ChatDBManager {
     private final String USERNAME = System.getenv("POSTGRE_USERNAME");
     private String PASSWORD = System.getenv("POSTGRE_PASSWORD");
 
-    private final GetRecord getRecord = new GetRecord();
-
     // singleton
     private static ChatDBManager instance;
     private Connection connection;
+    private final GetRecord getRecord = new GetRecord();
 
     // Define the constructor as private to prevent direct instantiation of the
     // class (aka singleton)
-    private void executeStatement(String tableQuery) {
+    private void createTableQuery(String tableQuery) {
         try (PreparedStatement preparedStatement = connection.prepareStatement(tableQuery)) {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new SqlExecutionException("ExecuteStatement error!", e);
+            throw new SqlExecutionException("createTableQuery error!", e);
         }
     }
 
@@ -50,10 +47,9 @@ public class ChatDBManager {
         try {
             this.connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 
-            executeStatement(CreateTable.createUserTableQuery);
-            executeStatement(CreateTable.createFriendRequestTableQuery);
-            executeStatement(CreateTable.createGroupChatTableQuery);
-            executeStatement(CreateTable.createMessageTableQuery);
+            for (String tableQuery : CreateTable.getCreateTableQueries()) {
+                createTableQuery(tableQuery);
+            }
 
         } catch (SQLException e) {
             logger.info(e.getMessage());
