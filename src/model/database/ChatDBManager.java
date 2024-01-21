@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import com.amazonaws.http.exception.HttpRequestTimeoutException;
 
 import model.FriendRequest;
 import model.GroupChat;
@@ -19,6 +20,7 @@ import model.Message;
 import model.User;
 import model.database.sql_statements.CreateTable;
 import model.database.sql_statements.GetRecord;
+import controller.helpers.exceptions.SqlExecutionException;
 
 public class ChatDBManager {
     private static final Logger logger = LogManager.getLogger(ChatDBManager.class.getName());
@@ -40,7 +42,7 @@ public class ChatDBManager {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SqlExecutionException("ExecuteStatement error!", e);
         }
     }
 
@@ -206,7 +208,7 @@ public class ChatDBManager {
             preparedStatement.executeUpdate();
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new SqlExecutionException("insertQuery error!", e);
         }
     }
 }

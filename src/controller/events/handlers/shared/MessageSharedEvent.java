@@ -20,7 +20,7 @@ public class MessageSharedEvent extends SharedEventValues {
             logger.info("Retrieved message: " + dbMessages.get(0).toString());
 
             dbMessages = dbMessages.stream()
-                    .peek(message -> {
+                    .map(message -> {
                         if (message.getAttachmentURL() == null || message.getAttachmentURL().isEmpty()) {
                             message.setAttachmentURL("");
                         } else {
@@ -28,6 +28,7 @@ public class MessageSharedEvent extends SharedEventValues {
                                     message.getSender().getEmail() + "/" + message.getAttachmentURL());
                             message.setAttachmentURL(encodedAttachmentFile);
                         }
+                        return message;
                     })
                     .collect(Collectors.toList());
 
@@ -56,11 +57,10 @@ public class MessageSharedEvent extends SharedEventValues {
             S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
                     + dbMessage.get(0).getAttachmentURL());
 
-            boolean isDeleted = chatDBManager
+            return chatDBManager
                     .updateRecordQuery(
                             deleteRecord.DeleteMessageEQID(messageID));
 
-            return isDeleted;
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
         }
@@ -69,8 +69,9 @@ public class MessageSharedEvent extends SharedEventValues {
 
     private List<Message> maskSenderPassword(List<Message> dbMessages) {
         return dbMessages.stream()
-                .peek(message -> {
+                .map(message -> {
                     message.getSender().setPassowrd("");
+                    return message;
                 })
                 .collect(Collectors.toList());
     }

@@ -13,10 +13,12 @@ import controller.events.handlers.user.*;
  * and return the appropriate event handler based on the event type
  */
 public class EventHandlerRegistry {
-    private static final Map<String, EventHandler> eventHandlerMap = new HashMap<>();
 
-    static {
+    private static EventHandlerRegistry instance = null;
+    private final Map<String, EventHandler> eventHandlerMap;
 
+    private EventHandlerRegistry() {
+        eventHandlerMap = new HashMap<>();
         // User
         eventHandlerMap.put("SignUp", new SignUpEventHandler());
         eventHandlerMap.put("Login", new LoginEventHandler());
@@ -42,17 +44,16 @@ public class EventHandlerRegistry {
         eventHandlerMap.put("GetMessages", new GetMessagesEventHandler());
         eventHandlerMap.put("SendMessage", new SendMessageEventHandler());
         eventHandlerMap.put("DeleteMessage", new DeleteMessageEventHandler());
-
     }
 
-    /*
-     * This method returns the appropriate event handler based on the event type
-     *
-     * @param eventType (SignUp,Login...) coming from the client
-     *
-     * @return @Overridden handleEvent method
-     */
-    public static EventHandler getEventHandler(String eventType) {
-        return eventHandlerMap.get(eventType);
+    public static EventHandlerRegistry getInstance() {
+        if (instance == null) {
+            instance = new EventHandlerRegistry();
+        }
+        return instance;
+    }
+
+    public EventHandler getEventHandler(String eventType) {
+        return this.eventHandlerMap.get(eventType);
     }
 }

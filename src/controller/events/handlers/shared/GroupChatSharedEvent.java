@@ -37,11 +37,9 @@ public class GroupChatSharedEvent extends SharedEventValues {
         }
 
         try {
-            boolean isUpdated = chatDBManager
+            return chatDBManager
                     .updateRecordQuery(
                             updateQuery);
-
-            return isUpdated;
 
         } catch (Exception e) {
             logger.error("updateUserFromGroupChatEQGPID Error: {}", e.getMessage());
@@ -89,11 +87,10 @@ public class GroupChatSharedEvent extends SharedEventValues {
 
     public boolean deleteGroupChatEQID(int groupchatid) {
         try {
-            boolean isDeleted = chatDBManager
+            return chatDBManager
                     .updateRecordQuery(
                             deleteRecord.DeleteGroupChatEQID(groupchatid));
 
-            return isDeleted;
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
         }

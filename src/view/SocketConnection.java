@@ -66,7 +66,7 @@ public class SocketConnection {
             ClientRequest payload = deserializePayload(stringPayload);
             logger.info("Event type received: {}", payload.eventType);
 
-            EventHandler eventHandler = EventHandlerRegistry.getEventHandler(payload.eventType);
+            EventHandler eventHandler = EventHandlerRegistry.getInstance().getEventHandler(payload.eventType);
 
             if (eventHandler != null) {
                 String response = eventHandler.handleEvent(payload);
