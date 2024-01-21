@@ -26,7 +26,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
             // Check if the status is accepted to get all friend requests that are accepted
             // and move them in recipient field
             if (filterFriendRequest.getStatus().equals(STATUS_ACCEPTED)
-                    || filteredGetRecord.equals(getRecord.getReceivedFriendRequests))
+                    || filteredGetRecord.equals(getRecord.GET_FRIENDREQUEST_EQ__PENDING_EQ_RECIPIENT_ID))
                 dbFriendRequest = filterFriendRequestNEQAuthUser(dbFriendRequest, senderID);
 
             logger.info("Retrieved friends: " + dbFriendRequest.get(0).toString());
@@ -40,7 +40,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
     public List<FriendRequest> getFriendRequestEQSenderID(int senderID) {
 
-        String noneFilteredGetRecord = getRecord.getFriendRequestEQSenderID;
+        String noneFilteredGetRecord = getRecord.GET_FRIENDREQUEST_EQ_SENDER_ID;
 
         List<FriendRequest> dbFriendRequest = null;
         try {
@@ -64,7 +64,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
-                            getRecord.checkIfFriendRequestExistsEQSenderRecipientID, senderid, recipientid,
+                            getRecord.GET_FRIENDREQUEST_EQ_SENDER_ID_OR_RECIPIENT_ID, senderid, recipientid,
                             statusIterator);
 
             if (!dbFriendRequest.isEmpty()) {
@@ -75,7 +75,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                 else if (statusIterator.equals(STATUS_REJECTED)) {
                     chatDBManager
                             .executeUpdateQuery(
-                                    updateRecord.UpdateFriendRequestStatusEQID, STATUS_PENDING,
+                                    updateRecord.UPDATE_FRIENDREQUEST_STATUS_EQ_ID, STATUS_PENDING,
                                     dbFriendRequest.get(0).getId());
                     return "User already rejected the friend request invitation. Now setting it back to Pending";
                 }
@@ -95,14 +95,14 @@ public class FriendRequestSharedEvent extends SharedEventValues {
             case STATUS_PENDING:
                 // Get friend requests that are pending for the sender
                 if (!filterFriendRequest.getSender().getEmail().isEmpty()) {
-                    return getRecord.getFriendRequestPendingEQSenderID;
+                    return getRecord.GET_FRIENDREQUEST_EQ__PENDING_EQ_SENDER_ID;
                 }
                 // Get friend requests that are pending for the recipient
                 else
-                    return getRecord.getReceivedFriendRequests;
+                    return getRecord.GET_FRIENDREQUEST_EQ__PENDING_EQ_RECIPIENT_ID;
 
             case STATUS_ACCEPTED:
-                return getRecord.getFriendRequestAcceptedEQSenderID;
+                return getRecord.GET_FRIENDREQUEST_EQ_ACCEPTED_EQ_SENDER_ID;
 
             default:
                 throw new IllegalArgumentException("Invalid status: " + filterFriendRequest.getStatus());
@@ -132,7 +132,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         try {
             return chatDBManager
                     .executeUpdateQuery(
-                            updateRecord.UpdateFriendRequestStatusEQID, status, friendrequestid);
+                            updateRecord.UPDATE_FRIENDREQUEST_STATUS_EQ_ID, status, friendrequestid);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());

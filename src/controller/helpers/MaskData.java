@@ -20,7 +20,7 @@ public class MaskData {
 
     public static String base64EncodeS3File(String key) {
         try {
-            S3Object object = S3Manager.getDownloadedFile(key);
+            S3Object object = new S3Manager().getDownloadedFile(key);
             byte[] fileContent = IOUtils.toByteArray(object.getObjectContent());
             return Base64.getEncoder().encodeToString(fileContent);
         } catch (Exception e) {

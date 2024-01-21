@@ -133,8 +133,8 @@ public class ChatDBManager {
                 Integer recipientIdsArray = rs.getInt("recipientid");
                 Integer senderIdsArray = rs.getInt("senderid");
 
-                List<User> dbSender = getUsersQuery(getRecord.getUserEQID, senderIdsArray);
-                List<User> dbRecipient = getUsersQuery(getRecord.getUserEQID, recipientIdsArray);
+                List<User> dbSender = getUsersQuery(getRecord.GET_USER_EQ_ID, senderIdsArray);
+                List<User> dbRecipient = getUsersQuery(getRecord.GET_USER_EQ_ID, recipientIdsArray);
 
                 FriendRequest friendRequest = new FriendRequest(rs.getInt("id"), rs.getString("status"),
                         dbSender.get(0), dbRecipient.get(0));
@@ -157,7 +157,7 @@ public class ChatDBManager {
 
                 Integer senderID = rs.getInt("senderid");
 
-                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID, senderID);
+                List<User> dbRetrievedUser = getUsersQuery(getRecord.GET_USER_EQ_ID, senderID);
 
                 Message message = new Message(rs.getInt("id"), rs.getString("content"), rs.getString("attachmenturl"),
                         rs.getTimestamp("timestamp"),

@@ -13,7 +13,7 @@ public class UserSharedEvent extends SharedEventValues {
         List<User> dbSender = null;
         try {
             dbSender = chatDBManager.getUsersQuery(
-                    getRecord.getUserEQEmail, email);
+                    getRecord.GET_USER_EQ_EMAIL, email);
 
             logger.info("Retrieved user: " + dbSender.get(0).toString());
         } catch (Exception e) {
@@ -26,7 +26,7 @@ public class UserSharedEvent extends SharedEventValues {
         try {
             return chatDBManager
                     .executeUpdateQuery(
-                            updateRecord.UpdatePasswordEQID, password, userID);
+                            updateRecord.UPDATE_USER_PASSWORD_EQ_ID, password, userID);
 
         } catch (Exception e) {
             logger.error("updatePasswordEQID: {}", e.getMessage());
@@ -38,7 +38,7 @@ public class UserSharedEvent extends SharedEventValues {
         try {
             return chatDBManager
                     .executeUpdateQuery(
-                            updateRecord.UpdateEmailEQID, email, userID);
+                            updateRecord.UPDATE_USER_EMAIL_EQ_ID, email, userID);
 
         } catch (Exception e) {
             logger.error("updateEmailEQID: {}", e.getMessage());
@@ -50,7 +50,7 @@ public class UserSharedEvent extends SharedEventValues {
         try {
             return chatDBManager
                     .executeUpdateQuery(
-                            updateRecord.UpdateUsernameEQEmail, username, email);
+                            updateRecord.UPDATE_USER_USERNAME_EQ_EMAIL, username, email);
 
         } catch (Exception e) {
             logger.error("updateUsernameEQID: {}", e.getMessage());

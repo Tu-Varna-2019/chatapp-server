@@ -15,7 +15,7 @@ public class MessageSharedEvent extends SharedEventValues {
         List<Message> dbMessages = null;
         try {
             dbMessages = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQGroupID, Integer.parseInt(groupChatID));
+                    .getMessagesQuery(getRecord.GET_MESSAGE_EQ_GROUPCHAT_ID, Integer.parseInt(groupChatID));
 
             logger.info("Retrieved message: " + dbMessages.get(0).toString());
 
@@ -38,7 +38,7 @@ public class MessageSharedEvent extends SharedEventValues {
             return dbMessages;
 
         } catch (Exception e) {
-            logger.error("getMessages Error: {}", e.getMessage());
+            logger.error("Messages not found!");
             return Collections.emptyList();
         }
     }
@@ -52,9 +52,9 @@ public class MessageSharedEvent extends SharedEventValues {
     public boolean deleteMessageEQID(int messageID) {
         try {
             List<Message> dbMessage = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQID, messageID);
+                    .getMessagesQuery(getRecord.GET_MESSAGE_EQ_ID, messageID);
 
-            S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
+            new S3Manager().deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
                     + dbMessage.get(0).getAttachmentURL());
 
             return chatDBManager

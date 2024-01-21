@@ -26,6 +26,9 @@ public class LoginEventHandler extends SharedEventHandler {
             status = "Success";
             message = "Successfully logged in!";
             dataResponse.user = dbRetrievedUser.get(0);
+        } else {
+            status = "Error";
+            dataResponse.user = null;
         }
 
         return sendPayloadToClient();
