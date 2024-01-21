@@ -44,8 +44,10 @@ public class ChangePasswordEventHandler extends SharedEventHandler {
                                 message = "Successfully updated password! We will log you out now";
                         }
 
-                } else
+                } else {
+                        status = "Failed";
                         message = "Incorrect password!";
+                }
 
                 return sendPayloadToClient();
         }
