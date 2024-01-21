@@ -13,7 +13,7 @@ public class UserSharedEvent extends SharedEventValues {
         List<User> dbSender = null;
         try {
             dbSender = chatDBManager.getUsersQuery(
-                    getRecord.getUserEQEmail(email));
+                    getRecord.GET_USER_EQ_EMAIL, email);
 
             logger.info("Retrieved user: " + dbSender.get(0).toString());
         } catch (Exception e) {
@@ -24,50 +24,46 @@ public class UserSharedEvent extends SharedEventValues {
 
     public boolean updatePasswordEQID(String password, int userID) {
         try {
-            boolean isUpdated = chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdatePasswordEQID(password, userID));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            updateRecord.UPDATE_USER_PASSWORD_EQ_ID, password, userID);
 
-            return isUpdated;
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage());
+            logger.error("updatePasswordEQID: {}", e.getMessage());
         }
         return false;
     }
 
     public boolean updateEmailEQID(String email, int userID) {
         try {
-            boolean isUpdated = chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdateEmailEQID(email, userID));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            updateRecord.UPDATE_USER_EMAIL_EQ_ID, email, userID);
 
-            return isUpdated;
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage());
+            logger.error("updateEmailEQID: {}", e.getMessage());
         }
         return false;
     }
 
     public boolean updateUsernameEQID(String username, String email) {
         try {
-            boolean isUpdated = chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdateUsernameEQEmail(username, email));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            updateRecord.UPDATE_USER_USERNAME_EQ_EMAIL, username, email);
 
-            return isUpdated;
         } catch (Exception e) {
-            logger.error("Error: {}", e.getMessage());
+            logger.error("updateUsernameEQID: {}", e.getMessage());
         }
         return false;
     }
 
     public boolean deleteUserEQID(int userID) {
         try {
-            boolean isDeleted = chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteUserEQID(userID));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteUserEQID, userID);
 
-            return isDeleted;
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
         }
@@ -75,7 +71,7 @@ public class UserSharedEvent extends SharedEventValues {
     }
 
     public void insertUser(String username, String email, String password) {
-        chatDBManager.insertQuery(insertStatement.INSERT_USER, username, email, password);
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_USER, username, email, password);
     }
 
 }

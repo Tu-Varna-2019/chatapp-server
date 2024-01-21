@@ -33,7 +33,7 @@ public class SendFriendRequestEventHandler extends SharedEventHandler {
      * }
      */
 
-    private final String DEFAULT_STATUS = "Pending";
+    private static final String DEFAULT_STATUS = "Pending";
 
     @Override
     public String handleEvent(ClientRequest payload) {

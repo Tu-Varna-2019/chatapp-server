@@ -3,7 +3,6 @@ package controller.events.handlers.shared;
 import java.util.Collections;
 import java.util.List;
 
-import controller.helpers.Helpers;
 import model.GroupChat;
 import model.User;
 
@@ -14,7 +13,7 @@ public class GroupChatSharedEvent extends SharedEventValues {
         try {
             dbGroupChat = chatDBManager
                     .getGroupChatQuery(
-                            getRecord.getGroupChatEQName(groupchatName));
+                            getRecord.GET_GROUPCHAT_EQ_NAME, groupchatName);
 
             logger.info("Retrieved group chat: " + dbGroupChat.get(0).toString());
         } catch (Exception e) {
@@ -27,21 +26,19 @@ public class GroupChatSharedEvent extends SharedEventValues {
         String updateQuery = "";
         switch (mode) {
             case "Add":
-                updateQuery = updateRecord.AddUserFromGroupChatEQGPID(groupchatid, userid);
+                updateQuery = updateRecord.UPDATE_GROUPCHAT_USERIDS_ADD;
                 break;
             case "Remove":
-                updateQuery = updateRecord.RemoveUserFromGroupChatEQGPID(groupchatid, userid);
+                updateQuery = updateRecord.UPDATE_GROUPCHAT_USERIDS_REMOVE;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid mode: " + mode);
         }
 
         try {
-            boolean isUpdated = chatDBManager
-                    .updateRecordQuery(
-                            updateQuery);
-
-            return isUpdated;
+            return chatDBManager
+                    .executeUpdateQuery(
+                            updateQuery, groupchatid, userid);
 
         } catch (Exception e) {
             logger.error("updateUserFromGroupChatEQGPID Error: {}", e.getMessage());
@@ -54,7 +51,7 @@ public class GroupChatSharedEvent extends SharedEventValues {
 
         return chatDBManager
                 .getRecordExists(
-                        getRecord.checkIfUserAlreadyInGroupChat(groupchatid, userid));
+                        getRecord.GET_FRIENDREQUEST_EQ_ID_AND_IN_USERIDS, groupchatid, userid);
     }
 
     public List<GroupChat> getGroupChatEQUserID(int userID) {
@@ -62,38 +59,35 @@ public class GroupChatSharedEvent extends SharedEventValues {
         try {
             dbGroupChat = chatDBManager
                     .getGroupChatQuery(
-                            getRecord.getGroupChatEQUserID(userID));
+                            getRecord.GET_GROUPCHAT_EQ_USER_ID, userID);
 
             dbGroupChat.stream()
                     .forEach(groupChat -> {
                         List<User> users = chatDBManager.getUsersQuery(
-                                getRecord.getUsersByIDS(
-                                        Helpers.convertArrIntToStringComma(
-                                                groupChat.getUserids())));
+                                getRecord.GET_USER_EQ_IN_IDS(groupChat.getUserids().length),
+                                (Object[]) groupChat.getUserids());
                         groupChat.setUsers(users);
                     });
             logger.info("Retrieved group chat: " + dbGroupChat.get(0).toString());
 
             return dbGroupChat;
         } catch (Exception e) {
-            logger.error("getUserIDByEmail Error: {}", e.getMessage());
+            logger.error("Group chats not found!");
             return Collections.emptyList();
         }
-
     }
 
     public void insertGroupChat(String groupchatName, List<User> dbRetrievedUser) {
-        chatDBManager.insertQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
                 new Integer[] { dbRetrievedUser.get(0).getId() });
     }
 
     public boolean deleteGroupChatEQID(int groupchatid) {
         try {
-            boolean isDeleted = chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteGroupChatEQID(groupchatid));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteGroupChatEQID, groupchatid);
 
-            return isDeleted;
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
         }

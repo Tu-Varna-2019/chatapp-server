@@ -46,7 +46,8 @@ public class SendMessageEventHandler extends SharedEventHandler {
                 if (fileAttachment != null && !fileAttachment.isEmpty()) {
                         byte[] imageBytes = Base64.getDecoder().decode(fileAttachment);
                         // Save file to s3
-                        boolean isUploadCompleted = S3Manager.uploadFile(email + "/" + fileName,
+
+                        boolean isUploadCompleted = new S3Manager().uploadFile(email + "/" + fileName,
                                         imageBytes);
 
                         if (isUploadCompleted)

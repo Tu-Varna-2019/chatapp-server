@@ -24,7 +24,7 @@ import model.dataclass.ClientRequest;
 public class SocketConnection {
 
     private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
-    private final int PORT_NUMBER = 8081;
+    private static final int PORT_NUMBER = 8081;
     private static SocketConnection instance;
     private final ConcurrentHashMap<String, Socket> sockets = new ConcurrentHashMap<>();
 
@@ -66,16 +66,11 @@ public class SocketConnection {
             ClientRequest payload = deserializePayload(stringPayload);
             logger.info("Event type received: {}", payload.eventType);
 
-            EventHandler eventHandler = EventHandlerRegistry.getEventHandler(payload.eventType);
+            EventHandler eventHandler = EventHandlerRegistry.getInstance().getEventHandler(payload.eventType);
 
             if (eventHandler != null) {
                 String response = eventHandler.handleEvent(payload);
-                // STILL ON TESTING for implementing the notification functionality
-                // if (eventType.equals("Login")) {
-                // logger.info("Client is now logged! Adding {} to sockets list!",
-                // decodedData.get("email"));
-                // sockets.put(decodedData.get("email"), clientSocket);
-                // }
+
                 logger.info("Response: {}", response);
                 writer.write(response);
                 writer.newLine();
@@ -86,6 +81,12 @@ public class SocketConnection {
 
         } catch (IOException e) {
             logger.error("I/O Exception in client request handling: ", e);
+        } finally {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                logger.error("I/O Exception in client request handling: ", e);
+            }
         }
     }
 

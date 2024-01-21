@@ -19,14 +19,17 @@ import view.SocketConnection;
 
 public class S3Manager {
 
+    public S3Manager() {
+        getAWSCredentials();
+    }
+
     private static final String BUCKET_NAME = "tu-varna-chatapp-client-images-aws";
     private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
 
     private static AWSCredentials credentials = null;
     private static AmazonS3 s3 = null;
 
-    private static void getAWSCredentials() {
-
+    private void getAWSCredentials() {
         /*
          * The ProfileCredentialsProvider will return your [default]
          * credential profile by reading from the credentials file located at
@@ -57,9 +60,8 @@ public class S3Manager {
         }
     }
 
-    public static boolean uploadFile(String key, byte[] fileBytes) {
+    public boolean uploadFile(String key, byte[] fileBytes) {
         logger.info("Uploading a new object to S3 from a file\n");
-        getAWSCredentials();
         try {
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(fileBytes.length);
@@ -76,9 +78,8 @@ public class S3Manager {
         return false;
     }
 
-    public static S3Object getDownloadedFile(String key) {
+    public S3Object getDownloadedFile(String key) {
         logger.info("Downloading an object");
-        getAWSCredentials();
         try {
             S3Object object = s3.getObject(new GetObjectRequest(BUCKET_NAME, key));
             logger.info("Content-Type: " + object.getObjectMetadata().getContentType());
@@ -93,9 +94,8 @@ public class S3Manager {
         return null;
     }
 
-    public static void deleteFile(String key) {
+    public void deleteFile(String key) {
         logger.info("Deleting a file {} from S3\n", key);
-        getAWSCredentials();
         try {
             s3.deleteObject(BUCKET_NAME, key);
             logger.info("File deleted!");

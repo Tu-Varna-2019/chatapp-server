@@ -15,12 +15,12 @@ public class MessageSharedEvent extends SharedEventValues {
         List<Message> dbMessages = null;
         try {
             dbMessages = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQGroupID(Integer.parseInt(groupChatID)));
+                    .getMessagesQuery(getRecord.GET_MESSAGE_EQ_GROUPCHAT_ID, Integer.parseInt(groupChatID));
 
             logger.info("Retrieved message: " + dbMessages.get(0).toString());
 
             dbMessages = dbMessages.stream()
-                    .peek(message -> {
+                    .map(message -> {
                         if (message.getAttachmentURL() == null || message.getAttachmentURL().isEmpty()) {
                             message.setAttachmentURL("");
                         } else {
@@ -28,6 +28,7 @@ public class MessageSharedEvent extends SharedEventValues {
                                     message.getSender().getEmail() + "/" + message.getAttachmentURL());
                             message.setAttachmentURL(encodedAttachmentFile);
                         }
+                        return message;
                     })
                     .collect(Collectors.toList());
 
@@ -37,13 +38,13 @@ public class MessageSharedEvent extends SharedEventValues {
             return dbMessages;
 
         } catch (Exception e) {
-            logger.error("getMessages Error: {}", e.getMessage());
+            logger.error("Messages not found!");
             return Collections.emptyList();
         }
     }
 
     public void insertMessage(Message messageModel, String groupChatID, List<User> dbSender) {
-        chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, messageModel.getContent(),
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_MESSAGE, messageModel.getContent(),
                 messageModel.getAttachmentURL(), messageModel.getTimestamp(),
                 dbSender.get(0).getId(), Integer.parseInt(groupChatID));
     }
@@ -51,16 +52,15 @@ public class MessageSharedEvent extends SharedEventValues {
     public boolean deleteMessageEQID(int messageID) {
         try {
             List<Message> dbMessage = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQID(messageID));
+                    .getMessagesQuery(getRecord.GET_MESSAGE_EQ_ID, messageID);
 
-            S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
+            new S3Manager().deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
                     + dbMessage.get(0).getAttachmentURL());
 
-            boolean isDeleted = chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteMessageEQID(messageID));
+            return chatDBManager
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteMessageEQID, messageID);
 
-            return isDeleted;
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
         }
@@ -69,8 +69,9 @@ public class MessageSharedEvent extends SharedEventValues {
 
     private List<Message> maskSenderPassword(List<Message> dbMessages) {
         return dbMessages.stream()
-                .peek(message -> {
+                .map(message -> {
                     message.getSender().setPassowrd("");
+                    return message;
                 })
                 .collect(Collectors.toList());
     }

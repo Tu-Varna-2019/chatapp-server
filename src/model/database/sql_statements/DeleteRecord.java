@@ -2,23 +2,15 @@ package model.database.sql_statements;
 
 public class DeleteRecord {
 
-    public final String DeleteUserEQID(int id) {
+    private final String DELETE_FROM = "DELETE FROM ";
+    private final String WHERE_ID = "WHERE id= ? ;";
 
-        return "DELETE FROM \"User\" WHERE id= " + id + ";";
-    };
+    public final String DeleteUserEQID = DELETE_FROM + " \"User\" " + WHERE_ID;
 
-    public final String DeleteMessageEQID(int id) {
+    public final String DeleteMessageEQID = DELETE_FROM + " \"Message\" " + WHERE_ID;
 
-        return "DELETE FROM \"Message\" WHERE id= " + id + ";";
-    };
+    public final String DeleteGroupChatEQID = DELETE_FROM + " \"GroupChat\" " + WHERE_ID;
 
-    public final String DeleteGroupChatEQID(int id) {
+    public final String DeleteFriendRequestEQID = DELETE_FROM + " \"FriendRequest\" " + WHERE_ID;
 
-        return "DELETE FROM \"GroupChat\" WHERE id= " + id + ";";
-    };
-
-    public final String DeleteFriendRequestEQID(int id) {
-
-        return "DELETE FROM \"FriendRequest\" WHERE id= " + id + ";";
-    };
 }

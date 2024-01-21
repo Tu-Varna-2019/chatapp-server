@@ -100,7 +100,8 @@ public class GetFriendRequestsEventHandler extends SharedEventHandler {
                                 dataResponse.friendrequests = dbFriendRequest;
                         } else {
                                 status = "Error";
-                                dataResponse.friendrequests.clear();
+                                if (dataResponse.friendrequests != null)
+                                        dataResponse.friendrequests.clear();
                         }
                 }
 
