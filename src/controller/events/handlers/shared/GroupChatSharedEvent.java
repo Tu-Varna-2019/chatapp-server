@@ -14,7 +14,7 @@ public class GroupChatSharedEvent extends SharedEventValues {
         try {
             dbGroupChat = chatDBManager
                     .getGroupChatQuery(
-                            getRecord.getGroupChatEQName(groupchatName));
+                            getRecord.getGroupChatEQName, groupchatName);
 
             logger.info("Retrieved group chat: " + dbGroupChat.get(0).toString());
         } catch (Exception e) {
@@ -27,10 +27,10 @@ public class GroupChatSharedEvent extends SharedEventValues {
         String updateQuery = "";
         switch (mode) {
             case "Add":
-                updateQuery = updateRecord.AddUserFromGroupChatEQGPID(groupchatid, userid);
+                updateQuery = updateRecord.AddUserFromGroupChatEQGPID;
                 break;
             case "Remove":
-                updateQuery = updateRecord.RemoveUserFromGroupChatEQGPID(groupchatid, userid);
+                updateQuery = updateRecord.RemoveUserFromGroupChatEQGPID;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid mode: " + mode);
@@ -38,8 +38,8 @@ public class GroupChatSharedEvent extends SharedEventValues {
 
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            updateQuery);
+                    .executeUpdateQuery(
+                            updateQuery, groupchatid, userid);
 
         } catch (Exception e) {
             logger.error("updateUserFromGroupChatEQGPID Error: {}", e.getMessage());
@@ -52,7 +52,7 @@ public class GroupChatSharedEvent extends SharedEventValues {
 
         return chatDBManager
                 .getRecordExists(
-                        getRecord.checkIfUserAlreadyInGroupChat(groupchatid, userid));
+                        getRecord.checkIfUserAlreadyInGroupChat, groupchatid, userid);
     }
 
     public List<GroupChat> getGroupChatEQUserID(int userID) {
@@ -60,14 +60,14 @@ public class GroupChatSharedEvent extends SharedEventValues {
         try {
             dbGroupChat = chatDBManager
                     .getGroupChatQuery(
-                            getRecord.getGroupChatEQUserID(userID));
+                            getRecord.getGroupChatEQUserID, userID);
 
             dbGroupChat.stream()
                     .forEach(groupChat -> {
                         List<User> users = chatDBManager.getUsersQuery(
-                                getRecord.getUsersByIDS(
-                                        Helpers.convertArrIntToStringComma(
-                                                groupChat.getUserids())));
+                                getRecord.getUsersByIDS,
+                                Helpers.convertArrIntToStringComma(
+                                        groupChat.getUserids()));
                         groupChat.setUsers(users);
                     });
             logger.info("Retrieved group chat: " + dbGroupChat.get(0).toString());
@@ -81,15 +81,15 @@ public class GroupChatSharedEvent extends SharedEventValues {
     }
 
     public void insertGroupChat(String groupchatName, List<User> dbRetrievedUser) {
-        chatDBManager.insertQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_GROUPCHAT, groupchatName,
                 new Integer[] { dbRetrievedUser.get(0).getId() });
     }
 
     public boolean deleteGroupChatEQID(int groupchatid) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteGroupChatEQID(groupchatid));
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteGroupChatEQID, groupchatid);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());

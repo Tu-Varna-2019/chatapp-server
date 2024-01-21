@@ -13,7 +13,7 @@ public class UserSharedEvent extends SharedEventValues {
         List<User> dbSender = null;
         try {
             dbSender = chatDBManager.getUsersQuery(
-                    getRecord.getUserEQEmail(email));
+                    getRecord.getUserEQEmail, email);
 
             logger.info("Retrieved user: " + dbSender.get(0).toString());
         } catch (Exception e) {
@@ -25,8 +25,8 @@ public class UserSharedEvent extends SharedEventValues {
     public boolean updatePasswordEQID(String password, int userID) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdatePasswordEQID(password, userID));
+                    .executeUpdateQuery(
+                            updateRecord.UpdatePasswordEQID, password, userID);
 
         } catch (Exception e) {
             logger.error("updatePasswordEQID: {}", e.getMessage());
@@ -37,8 +37,8 @@ public class UserSharedEvent extends SharedEventValues {
     public boolean updateEmailEQID(String email, int userID) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdateEmailEQID(email, userID));
+                    .executeUpdateQuery(
+                            updateRecord.UpdateEmailEQID, email, userID);
 
         } catch (Exception e) {
             logger.error("updateEmailEQID: {}", e.getMessage());
@@ -49,8 +49,8 @@ public class UserSharedEvent extends SharedEventValues {
     public boolean updateUsernameEQID(String username, String email) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdateUsernameEQEmail(username, email));
+                    .executeUpdateQuery(
+                            updateRecord.UpdateUsernameEQEmail, username, email);
 
         } catch (Exception e) {
             logger.error("updateUsernameEQID: {}", e.getMessage());
@@ -61,8 +61,8 @@ public class UserSharedEvent extends SharedEventValues {
     public boolean deleteUserEQID(int userID) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteUserEQID(userID));
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteUserEQID, userID);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
@@ -71,7 +71,7 @@ public class UserSharedEvent extends SharedEventValues {
     }
 
     public void insertUser(String username, String email, String password) {
-        chatDBManager.insertQuery(insertStatement.INSERT_USER, username, email, password);
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_USER, username, email, password);
     }
 
 }

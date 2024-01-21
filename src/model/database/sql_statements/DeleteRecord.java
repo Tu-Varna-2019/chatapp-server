@@ -3,24 +3,14 @@ package model.database.sql_statements;
 public class DeleteRecord {
 
     private final String DELETE_FROM = "DELETE FROM ";
+    private final String WHERE_ID = "WHERE id= ? ;";
 
-    public final String DeleteUserEQID(int id) {
+    public final String DeleteUserEQID = DELETE_FROM + " \"User\" " + WHERE_ID;
 
-        return DELETE_FROM + " \"User\" WHERE id= " + id + ";";
-    };
+    public final String DeleteMessageEQID = DELETE_FROM + " \"Message\" " + WHERE_ID;
 
-    public final String DeleteMessageEQID(int id) {
+    public final String DeleteGroupChatEQID = DELETE_FROM + " \"GroupChat\" " + WHERE_ID;
 
-        return DELETE_FROM + " \"Message\" WHERE id= " + id + ";";
-    };
+    public final String DeleteFriendRequestEQID = DELETE_FROM + " \"FriendRequest\" " + WHERE_ID;
 
-    public final String DeleteGroupChatEQID(int id) {
-
-        return DELETE_FROM + " \"GroupChat\" WHERE id= " + id + ";";
-    };
-
-    public final String DeleteFriendRequestEQID(int id) {
-
-        return DELETE_FROM + " \"FriendRequest\" WHERE id= " + id + ";";
-    };
 }

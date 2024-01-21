@@ -2,75 +2,54 @@ package model.database.sql_statements;
 
 public class GetRecord {
 
-    public final String getUserEQEmail(String email) {
+    private static final String SELECT_ALL_FROM = "SELECT * FROM ";
+    private static final String WHERE_ID = "WHERE id= ? ;";
 
-        return "SELECT * FROM \"User\" WHERE email='" + email + "';";
-    };
+    public final String getUserEQEmail =
 
-    public final String getUserEQID(int id) {
+            SELECT_ALL_FROM + " \"User\" WHERE email= ? ;";
 
-        return "SELECT * FROM \"User\" WHERE id= " + id + ";";
-    };
+    public final String getUserEQID =
 
-    public final String getUsersByIDS(String userIds) {
+            SELECT_ALL_FROM + " \"User\" " + WHERE_ID;
 
-        return "SELECT * FROM \"User\" WHERE id IN (" + userIds + ");";
-    };
+    public final String getUsersByIDS =
 
-    public final String getGroupChatEQUserID(int id) {
+            SELECT_ALL_FROM + " \"User\" WHERE id IN (?);";
 
-        return "SELECT * FROM \"GroupChat\" WHERE " + id + " = ANY(userids);";
-    };
+    public final String getGroupChatEQUserID =
 
-    public final String getGroupChatEQID(int id) {
+            SELECT_ALL_FROM + " \"GroupChat\" WHERE ? = ANY(userids);";
 
-        return "SELECT * FROM \"GroupChat\" WHERE id= " + id + ";";
-    };
+    public final String getGroupChatEQID =
 
-    public final String getGroupChatEQName(String name) {
+            SELECT_ALL_FROM + " \"GroupChat\" " + WHERE_ID;
 
-        return "SELECT * FROM \"GroupChat\" WHERE name='" + name + "';";
-    };
+    public final String getGroupChatEQName =
 
-    public final String getMessageEQGroupID(int id) {
+            SELECT_ALL_FROM + " \"GroupChat\" WHERE name= ?;";
 
-        return "SELECT * FROM \"Message\" WHERE groupchatid= " + id + " ;";
-    };
+    public final String getMessageEQGroupID = SELECT_ALL_FROM + " \"Message\" WHERE groupchatid= ? ;";
 
-    public final String getMessageEQID(int id) {
+    public final String getMessageEQID =
 
-        return "SELECT * FROM \"Message\" WHERE id= " + id + " ;";
-    };
+            SELECT_ALL_FROM + " \"Message\" " + WHERE_ID;
 
-    public final String getFriendRequestEQSenderID(int id) {
+    public final String getFriendRequestEQSenderID = SELECT_ALL_FROM + " \"FriendRequest\" WHERE senderid= ? ;";
 
-        return "SELECT * FROM \"FriendRequest\" WHERE senderid= " + id + " ;";
-    };
+    public final String getFriendRequestPendingEQSenderID = SELECT_ALL_FROM
+            + " \"FriendRequest\" WHERE senderid= ? AND status='Pending' ;";
 
-    public final String getFriendRequestPendingEQSenderID(int id) {
+    public final String getReceivedFriendRequests =
 
-        return "SELECT * FROM \"FriendRequest\" WHERE senderid= " + id + " AND status='Pending' ;";
-    };
+            SELECT_ALL_FROM + " \"FriendRequest\" WHERE recipientid= ? AND status='Pending' ;";
 
-    public final String getReceivedFriendRequests(int id) {
+    public final String getFriendRequestAcceptedEQSenderID = SELECT_ALL_FROM
+            + " \"FriendRequest\" WHERE ((senderid= ? OR recipientid= ?) AND status='Accepted');";
 
-        return "SELECT * FROM \"FriendRequest\" WHERE recipientid= " + id + " AND status='Pending' ;";
-    };
+    public final String checkIfFriendRequestExistsEQSenderRecipientID = SELECT_ALL_FROM
+            + " \"FriendRequest\" WHERE ((senderid = ? AND recipientid = ?) OR (senderid = ? AND recipientid = ?)) AND status = ?;";
 
-    public final String getFriendRequestAcceptedEQSenderID(int id) {
-        return "SELECT * FROM \"FriendRequest\" WHERE ((senderid=" + id + " OR recipientid= " + id
-                + ") AND status='Accepted');";
-    };
-
-    public final String checkIfFriendRequestExistsEQSenderRecipientID(int senderid, int recipientid, String status) {
-        return "SELECT * FROM \"FriendRequest\" WHERE ((senderid = " + senderid + " AND recipientid = " + recipientid
-                + ") OR (senderid = " + recipientid + " AND recipientid = " + senderid + ")) AND status = '" + status
-                + "';";
-    }
-
-    public final String checkIfUserAlreadyInGroupChat(int groupchatid, int userid) {
-        return "SELECT EXISTS( SELECT 1 FROM \"GroupChat\" WHERE id =" + groupchatid + " AND " + userid
-                + " = ANY(userids));";
-    };
+    public final String checkIfUserAlreadyInGroupChat = "SELECT EXISTS( SELECT 1 FROM \"GroupChat\" WHERE id = ? AND ? = ANY(userids));";
 
 };

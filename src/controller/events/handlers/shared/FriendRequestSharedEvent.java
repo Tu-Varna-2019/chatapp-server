@@ -21,12 +21,12 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
-                            filteredGetRecord);
+                            filteredGetRecord, senderID);
 
             // Check if the status is accepted to get all friend requests that are accepted
             // and move them in recipient field
             if (filterFriendRequest.getStatus().equals(STATUS_ACCEPTED)
-                    || filteredGetRecord.equals(getRecord.getReceivedFriendRequests(senderID)))
+                    || filteredGetRecord.equals(getRecord.getReceivedFriendRequests))
                 dbFriendRequest = filterFriendRequestNEQAuthUser(dbFriendRequest, senderID);
 
             logger.info("Retrieved friends: " + dbFriendRequest.get(0).toString());
@@ -40,13 +40,13 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
     public List<FriendRequest> getFriendRequestEQSenderID(int senderID) {
 
-        String noneFilteredGetRecord = getRecord.getFriendRequestEQSenderID(senderID);
+        String noneFilteredGetRecord = getRecord.getFriendRequestEQSenderID;
 
         List<FriendRequest> dbFriendRequest = null;
         try {
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
-                            noneFilteredGetRecord);
+                            noneFilteredGetRecord, senderID);
 
             logger.info("Retrieved sender: " + dbFriendRequest.get(0).toString());
         } catch (Exception e) {
@@ -64,8 +64,8 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
-                            getRecord.checkIfFriendRequestExistsEQSenderRecipientID(senderid, recipientid,
-                                    statusIterator));
+                            getRecord.checkIfFriendRequestExistsEQSenderRecipientID, senderid, recipientid,
+                            statusIterator);
 
             if (!dbFriendRequest.isEmpty()) {
                 if (statusIterator.equals(STATUS_PENDING))
@@ -74,9 +74,9 @@ public class FriendRequestSharedEvent extends SharedEventValues {
                     return "You are already friends with the user. Status: " + statusIterator;
                 else if (statusIterator.equals(STATUS_REJECTED)) {
                     chatDBManager
-                            .updateRecordQuery(
-                                    updateRecord.UpdateFriendRequestStatusEQID(STATUS_PENDING,
-                                            dbFriendRequest.get(0).getId()));
+                            .executeUpdateQuery(
+                                    updateRecord.UpdateFriendRequestStatusEQID, STATUS_PENDING,
+                                    dbFriendRequest.get(0).getId());
                     return "User already rejected the friend request invitation. Now setting it back to Pending";
                 }
             }
@@ -85,7 +85,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
     }
 
     public void insertFriendRequest(String status, int senderID, int recipientID) {
-        chatDBManager.insertQuery(insertStatement.INSERT_FRIEND_REQUEST, status, senderID, recipientID);
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_FRIEND_REQUEST, status, senderID, recipientID);
     }
 
     private String filterGetRecord(FriendRequest filterFriendRequest, int senderID) {
@@ -95,14 +95,14 @@ public class FriendRequestSharedEvent extends SharedEventValues {
             case STATUS_PENDING:
                 // Get friend requests that are pending for the sender
                 if (!filterFriendRequest.getSender().getEmail().isEmpty()) {
-                    return getRecord.getFriendRequestPendingEQSenderID(senderID);
+                    return getRecord.getFriendRequestPendingEQSenderID;
                 }
                 // Get friend requests that are pending for the recipient
                 else
-                    return getRecord.getReceivedFriendRequests(senderID);
+                    return getRecord.getReceivedFriendRequests;
 
             case STATUS_ACCEPTED:
-                return getRecord.getFriendRequestAcceptedEQSenderID(senderID);
+                return getRecord.getFriendRequestAcceptedEQSenderID;
 
             default:
                 throw new IllegalArgumentException("Invalid status: " + filterFriendRequest.getStatus());
@@ -131,8 +131,8 @@ public class FriendRequestSharedEvent extends SharedEventValues {
     public boolean updateStatusFriendRequest(String status, int friendrequestid) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            updateRecord.UpdateFriendRequestStatusEQID(status, friendrequestid));
+                    .executeUpdateQuery(
+                            updateRecord.UpdateFriendRequestStatusEQID, status, friendrequestid);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());
@@ -143,8 +143,8 @@ public class FriendRequestSharedEvent extends SharedEventValues {
     public boolean deleteFriendRequestEQID(int friendrequestid) {
         try {
             return chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteFriendRequestEQID(friendrequestid));
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteFriendRequestEQID, friendrequestid);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());

@@ -67,9 +67,9 @@ public class ChatDBManager {
         return this.connection;
     }
 
-    public boolean getRecordExists(String query) {
+    public boolean getRecordExists(String query, Object... columns) {
 
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
+        try (PreparedStatement pst = getPreparedStatement(query, columns)) {
 
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next())
@@ -81,10 +81,10 @@ public class ChatDBManager {
         return false;
     }
 
-    public List<User> getUsersQuery(String query) {
+    public List<User> getUsersQuery(String query, Object... columns) {
         List<User> queryResultList = new ArrayList<>();
 
-        try (PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = getPreparedStatement(query, columns);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
@@ -102,10 +102,10 @@ public class ChatDBManager {
 
     }
 
-    public List<GroupChat> getGroupChatQuery(String query) {
+    public List<GroupChat> getGroupChatQuery(String query, Object... columns) {
         List<GroupChat> queryResultList = new ArrayList<>();
 
-        try (PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = getPreparedStatement(query, columns);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
@@ -123,18 +123,18 @@ public class ChatDBManager {
         return Collections.emptyList();
     }
 
-    public List<FriendRequest> getFriendRequestQuery(String query) {
+    public List<FriendRequest> getFriendRequestQuery(String query, Object... columns) {
         List<FriendRequest> queryResultList = new ArrayList<>();
 
-        try (PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = getPreparedStatement(query, columns);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
                 Integer recipientIdsArray = rs.getInt("recipientid");
                 Integer senderIdsArray = rs.getInt("senderid");
 
-                List<User> dbSender = getUsersQuery(getRecord.getUserEQID(senderIdsArray));
-                List<User> dbRecipient = getUsersQuery(getRecord.getUserEQID(recipientIdsArray));
+                List<User> dbSender = getUsersQuery(getRecord.getUserEQID, senderIdsArray);
+                List<User> dbRecipient = getUsersQuery(getRecord.getUserEQID, recipientIdsArray);
 
                 FriendRequest friendRequest = new FriendRequest(rs.getInt("id"), rs.getString("status"),
                         dbSender.get(0), dbRecipient.get(0));
@@ -148,16 +148,16 @@ public class ChatDBManager {
         return Collections.emptyList();
     }
 
-    public List<Message> getMessagesQuery(String query) {
+    public List<Message> getMessagesQuery(String query, Object... columns) {
         List<Message> queryResultList = new ArrayList<>();
 
-        try (PreparedStatement pst = connection.prepareStatement(query);
+        try (PreparedStatement pst = getPreparedStatement(query, columns);
                 ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
 
                 Integer senderID = rs.getInt("senderid");
 
-                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID(senderID));
+                List<User> dbRetrievedUser = getUsersQuery(getRecord.getUserEQID, senderID);
 
                 Message message = new Message(rs.getInt("id"), rs.getString("content"), rs.getString("attachmenturl"),
                         rs.getTimestamp("timestamp"),
@@ -172,22 +172,20 @@ public class ChatDBManager {
         return Collections.emptyList();
     }
 
-    public boolean updateRecordQuery(String query) {
+    public boolean executeUpdateQuery(String query, Object... columns) {
+        try (PreparedStatement preparedStatement = getPreparedStatement(query, columns)) {
 
-        try (PreparedStatement pst = connection.prepareStatement(query)) {
-            int rowsAffected = pst.executeUpdate();
+            int rowsAffected = preparedStatement.executeUpdate();
 
-            if (rowsAffected > 0)
-                return true;
-
-        } catch (SQLException ex) {
-            logger.info(ex.getMessage());
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new SqlExecutionException("executeUpdateQuery error!", e);
         }
-        return false;
     }
 
-    public void insertQuery(String query, Object... columns) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    public PreparedStatement getPreparedStatement(String query, Object... columns) {
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             for (int index = 0; index < columns.length; index++) {
                 if (columns[index] instanceof String)
@@ -201,10 +199,10 @@ public class ChatDBManager {
                     preparedStatement.setArray(index + 1, sqlArray);
                 }
             }
-            preparedStatement.executeUpdate();
 
+            return preparedStatement;
         } catch (SQLException e) {
-            throw new SqlExecutionException("insertQuery error!", e);
+            throw new SqlExecutionException("getPreparedStatement error!", e);
         }
     }
 }

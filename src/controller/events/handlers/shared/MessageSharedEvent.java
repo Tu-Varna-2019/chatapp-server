@@ -15,7 +15,7 @@ public class MessageSharedEvent extends SharedEventValues {
         List<Message> dbMessages = null;
         try {
             dbMessages = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQGroupID(Integer.parseInt(groupChatID)));
+                    .getMessagesQuery(getRecord.getMessageEQGroupID, Integer.parseInt(groupChatID));
 
             logger.info("Retrieved message: " + dbMessages.get(0).toString());
 
@@ -44,7 +44,7 @@ public class MessageSharedEvent extends SharedEventValues {
     }
 
     public void insertMessage(Message messageModel, String groupChatID, List<User> dbSender) {
-        chatDBManager.insertQuery(insertStatement.INSERT_MESSAGE, messageModel.getContent(),
+        chatDBManager.executeUpdateQuery(insertStatement.INSERT_MESSAGE, messageModel.getContent(),
                 messageModel.getAttachmentURL(), messageModel.getTimestamp(),
                 dbSender.get(0).getId(), Integer.parseInt(groupChatID));
     }
@@ -52,14 +52,14 @@ public class MessageSharedEvent extends SharedEventValues {
     public boolean deleteMessageEQID(int messageID) {
         try {
             List<Message> dbMessage = chatDBManager
-                    .getMessagesQuery(getRecord.getMessageEQID(messageID));
+                    .getMessagesQuery(getRecord.getMessageEQID, messageID);
 
             S3Manager.deleteFile(dbMessage.get(0).getSender().getEmail() + "/"
                     + dbMessage.get(0).getAttachmentURL());
 
             return chatDBManager
-                    .updateRecordQuery(
-                            deleteRecord.DeleteMessageEQID(messageID));
+                    .executeUpdateQuery(
+                            deleteRecord.DeleteMessageEQID, messageID);
 
         } catch (Exception e) {
             logger.error("Error: {}", e.getMessage());

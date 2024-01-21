@@ -1,34 +1,26 @@
 package model.database.sql_statements;
 
 public class UpdateRecord {
-    public final String UpdateUsernameEQEmail(String username, String email) {
+    public final String UpdateUsernameEQEmail =
 
-        return "UPDATE \"User\" SET username = '" + username + "' WHERE email= '" + email + "';";
-    };
+            "UPDATE \"User\" SET username = ? WHERE email= ?;";
 
-    public final String UpdateEmailEQID(String email, int id) {
+    public final String UpdateEmailEQID =
 
-        return "UPDATE \"User\" SET email = '" + email + "' WHERE id= " + id + ";";
-    };
+            "UPDATE \"User\" SET email = ? WHERE id= ?;";
 
-    public final String UpdatePasswordEQID(String password, int id) {
+    public final String UpdatePasswordEQID =
 
-        return "UPDATE \"User\" SET password = '" + password + "' WHERE id= " + id + ";";
-    };
+            "UPDATE \"User\" SET password = ? WHERE id= ?;";
 
-    public final String RemoveUserFromGroupChatEQGPID(int groupchatid, int userid) {
+    public final String RemoveUserFromGroupChatEQGPID =
 
-        return "UPDATE \"GroupChat\" SET userids= array_remove(userids," + userid + ") WHERE id= " + groupchatid + ";";
+            "UPDATE \"GroupChat\" SET userids= array_remove(userids,?) WHERE id= ?;";
 
-    };
+    public final String AddUserFromGroupChatEQGPID =
 
-    public final String AddUserFromGroupChatEQGPID(int groupchatid, int userid) {
+            "UPDATE \"GroupChat\" SET userids= array_append(userids,?) WHERE id= ?;";
 
-        return "UPDATE \"GroupChat\" SET userids= array_append(userids," + userid + ") WHERE id= " + groupchatid + ";";
+    public final String UpdateFriendRequestStatusEQID = "UPDATE \"FriendRequest\" SET status= ? WHERE id= ?;";
 
-    };
-
-    public final String UpdateFriendRequestStatusEQID(String status, int friendrequestid) {
-        return "UPDATE \"FriendRequest\" SET status= '" + status + "' WHERE id= " + friendrequestid + " ;";
-    }
 }
