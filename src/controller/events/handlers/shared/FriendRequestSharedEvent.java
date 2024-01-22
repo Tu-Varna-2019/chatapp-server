@@ -17,11 +17,17 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
         List<FriendRequest> dbFriendRequest = null;
         try {
-            String filteredGetRecord = filterGetRecord(filterFriendRequest, senderID);
+            String filteredGetRecord = filterGetRecord(filterFriendRequest);
 
-            dbFriendRequest = chatDBManager
-                    .getFriendRequestQuery(
-                            filteredGetRecord, senderID);
+            // Temporary work
+            if (!filterFriendRequest.getStatus().equals(STATUS_ACCEPTED))
+                dbFriendRequest = chatDBManager
+                        .getFriendRequestQuery(
+                                filteredGetRecord, senderID);
+            else
+                dbFriendRequest = chatDBManager
+                        .getFriendRequestQuery(
+                                filteredGetRecord, senderID, senderID);
 
             // Check if the status is accepted to get all friend requests that are accepted
             // and move them in recipient field
@@ -88,7 +94,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
         chatDBManager.executeUpdateQuery(insertStatement.INSERT_FRIEND_REQUEST, status, senderID, recipientID);
     }
 
-    private String filterGetRecord(FriendRequest filterFriendRequest, int senderID) {
+    private String filterGetRecord(FriendRequest filterFriendRequest) {
 
         // Filter by status
         switch (filterFriendRequest.getStatus()) {
