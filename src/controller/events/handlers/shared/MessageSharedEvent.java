@@ -67,6 +67,19 @@ public class MessageSharedEvent extends SharedEventValues {
         return false;
     }
 
+    public void deleteMessageEQGroupChatID(int groupChatID) {
+        List<Message> dbMessages = chatDBManager
+                .getMessagesQuery(getRecord.GET_MESSAGE_EQ_GROUPCHAT_ID, groupChatID);
+
+        if (!dbMessages.isEmpty()) {
+            dbMessages.stream()
+                    .forEach((message) -> {
+                        deleteMessageEQID(message.getId());
+                    });
+        }
+
+    }
+
     private List<Message> maskSenderPassword(List<Message> dbMessages) {
         return dbMessages.stream()
                 .map(message -> {

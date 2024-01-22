@@ -39,7 +39,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             return dbFriendRequest;
         } catch (Exception e) {
-            logger.error("getFriendRequestEQSenderID Error: {}", e.getMessage());
+            logger.error("Friends not found !");
             return Collections.emptyList();
         }
     }
@@ -56,7 +56,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
 
             logger.info("Retrieved sender: " + dbFriendRequest.get(0).toString());
         } catch (Exception e) {
-            logger.error("getUserIDByEmail Error: {}", e.getMessage());
+            logger.error("getFriendRequestEQSenderID Error: {}", e.getMessage());
         }
         return dbFriendRequest;
     }
@@ -71,6 +71,7 @@ public class FriendRequestSharedEvent extends SharedEventValues {
             dbFriendRequest = chatDBManager
                     .getFriendRequestQuery(
                             getRecord.GET_FRIENDREQUEST_EQ_SENDER_ID_OR_RECIPIENT_ID, senderid, recipientid,
+                            recipientid, senderid,
                             statusIterator);
 
             if (!dbFriendRequest.isEmpty()) {

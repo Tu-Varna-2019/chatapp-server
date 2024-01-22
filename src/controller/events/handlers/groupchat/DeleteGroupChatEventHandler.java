@@ -10,6 +10,9 @@ public class DeleteGroupChatEventHandler extends SharedEventHandler {
 
         Integer groupchatid = payload.data.groupchat.getId();
 
+        // First delete all messages within group chat
+        sharedMessage.deleteMessageEQGroupChatID(groupchatid);
+        // then delete the empty group chat
         boolean isGroupChatDeleted = sharedGroupChat.deleteGroupChatEQID(groupchatid);
 
         if (isGroupChatDeleted) {

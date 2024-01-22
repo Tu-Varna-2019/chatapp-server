@@ -11,9 +11,9 @@ public class DeleteMessageEventHandler extends SharedEventHandler {
 
                 String messageID = payload.data.id;
 
-                boolean isDeleted = sharedMessage.deleteMessageEQID(Integer.parseInt(messageID));
+                boolean isMessageDeleted = sharedMessage.deleteMessageEQID(Integer.parseInt(messageID));
 
-                if (isDeleted) {
+                if (isMessageDeleted) {
                         status = "Success";
                         message = "Message deleted!";
                 }
