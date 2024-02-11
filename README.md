@@ -1,4 +1,8 @@
-# Introduction
+# Badges
+
+[![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
+## Introduction
 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.
 
