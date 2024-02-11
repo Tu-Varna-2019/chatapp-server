@@ -1,26 +1,16 @@
-name: Lint
+name: Checkstyle for Java
 
-on: [push, pull_request]
+on: [pull_request, push]
 
 jobs:
-  build:
-    name: Lint
+  checkstyle:
+    name: runner / checkstyle
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      packages: read
-      # report GitHub Actions status checks
-      statuses: write
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: dbelyaev/action-checkstyle@master
         with:
-          # full git history to get the
-          fetch-depth: 0
-
-      - name: Super-linter
-        uses: super-linter/super-linter@v6.0.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review
+          level: warning
+          checkstyle_config: google_checks.xml
