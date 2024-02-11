@@ -8,12 +8,12 @@ import com.chatapp.model.database.sql_statements.DeleteRecord;
 import com.chatapp.model.database.sql_statements.GetRecord;
 import com.chatapp.model.database.sql_statements.InsertRecord;
 import com.chatapp.model.database.sql_statements.UpdateRecord;
-import com.chatapp.view.SocketConnection;
+import com.chatapp.view.WebSocketConnection;
 
 public abstract class SharedEventValues {
 
     protected static final Logger logger = LogManager
-            .getLogger(SocketConnection.class.getName());
+            .getLogger(WebSocketConnection.class.getName());
 
     protected static final ChatDBManager chatDBManager = ChatDBManager.getInstance();
     protected InsertRecord insertStatement = new InsertRecord();

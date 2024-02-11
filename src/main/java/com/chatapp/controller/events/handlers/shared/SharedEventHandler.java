@@ -9,14 +9,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.chatapp.controller.events.EventHandler;
 import com.chatapp.model.dataclass.ClientResponse;
 import com.chatapp.model.dataclass.DataResponse;
-import com.chatapp.view.SocketConnection;
+import com.chatapp.view.WebSocketConnection;
 
 public abstract class SharedEventHandler implements EventHandler {
 
     protected String status = "Failed";
     protected String message = "Error! Please try again!";
     protected static final Logger logger = LogManager
-            .getLogger(SocketConnection.class.getName());
+            .getLogger(WebSocketConnection.class.getName());
 
     protected DataResponse dataResponse = new DataResponse();
 

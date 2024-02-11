@@ -8,12 +8,12 @@ import org.apache.logging.log4j.Logger;
 import com.chatapp.controller.events.handlers.shared.SharedEventHandler;
 import com.chatapp.model.User;
 import com.chatapp.model.dataclass.ClientRequest;
-import com.chatapp.view.SocketConnection;
+import com.chatapp.view.WebSocketConnection;
 
 public class RenameUsernameEventHandler extends SharedEventHandler {
 
         private static final Logger logger = LogManager
-                        .getLogger(SocketConnection.class.getName());
+                        .getLogger(WebSocketConnection.class.getName());
 
         @Override
         public String handleEvent(ClientRequest payload) {

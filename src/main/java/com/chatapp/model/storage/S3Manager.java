@@ -15,7 +15,7 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import com.chatapp.view.SocketConnection;
+import com.chatapp.view.WebSocketConnection;
 
 public class S3Manager {
 
@@ -24,7 +24,7 @@ public class S3Manager {
     }
 
     private static final String BUCKET_NAME = "tu-varna-chatapp-client-images-aws";
-    private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
+    private static final Logger logger = LogManager.getLogger(WebSocketConnection.class.getName());
 
     private static AWSCredentials credentials = null;
     private static AmazonS3 s3 = null;

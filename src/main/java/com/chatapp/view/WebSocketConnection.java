@@ -12,6 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.socket.AbstractWebSocketMessage;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,22 +26,24 @@ import com.chatapp.controller.events.EventHandler;
 import com.chatapp.controller.events.EventHandlerRegistry;
 import com.chatapp.model.dataclass.ClientRequest;
 
-public class SocketConnection {
+@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConnection extends AbstractWebSocketMessage {
 
-    private static final Logger logger = LogManager.getLogger(SocketConnection.class.getName());
+    private static final Logger logger = LogManager.getLogger(WebSocketConnection.class.getName());
     private static final int PORT_NUMBER = 8081;
-    private static SocketConnection instance;
+    private static WebSocketConnection instance;
     private final ConcurrentHashMap<String, Socket> sockets = new ConcurrentHashMap<>();
 
-    public static SocketConnection getInstance() {
+    public static WebSocketConnection getInstance() {
         if (instance == null) {
-            instance = new SocketConnection();
+            instance = new WebSocketConnection();
         }
 
         return instance;
     }
 
-    private SocketConnection() {
+    private WebSocketConnection() {
     }
 
     public void startServer() {
@@ -124,5 +131,17 @@ public class SocketConnection {
             logger.error("I/O Exception in client request handling: ", e);
             return false;
         }
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
+    }
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/chat");
+        registry.addEndpoint("/chat").withSockJS();
     }
 }

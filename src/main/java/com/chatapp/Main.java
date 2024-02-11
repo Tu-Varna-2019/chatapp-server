@@ -1,11 +1,11 @@
 package com.chatapp;
 
-import com.chatapp.view.SocketConnection;
+import com.chatapp.view.WebSocketConnection;
 
 public class Main {
     public static void main(String[] arg) {
 
-        SocketConnection socketConnection = SocketConnection.getInstance();
-        socketConnection.startServer();
+        WebSocketConnection WebSocketConnection = WebSocketConnection.getInstance();
+        WebSocketConnection.startServer();
     }
 }
