@@ -2,6 +2,8 @@
 
 [![Super-Linter](https://github.com/<OWNER>/<REPOSITORY>/actions/workflows/<WORKFLOW_FILE_NAME>/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
+[![Quality Gate Status](https://wes06teapp15066sonrqa.azurewebsites.net/api/project_badges/measure?project=Tu-Varna-2019_Masters-Winter-Project-JavaNetwork-ChatApp_158b3e51-7172-4f47-8026-9aa97dcd4091&metric=alert_status&token=sqb_39bcfe701e800bc1ca1d50706985a578f4bf6ee3)](https://wes06teapp15066sonrqa.azurewebsites.net/dashboard?id=Tu-Varna-2019_Masters-Winter-Project-JavaNetwork-ChatApp_158b3e51-7172-4f47-8026-9aa97dcd4091)
+
 ## Introduction
 
 TODO: Give a short introduction of your project. Let this section explain the objectives or the motivation behind this project.
